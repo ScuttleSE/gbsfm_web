@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>{% block title %}GBS-FM{% endblock %}</title>
+    <!-- <style type="text/css">
+			div.playlist {margin-left: auto; margin-right:auto; width: 640px;}
+      body, th, td { font:12px/1.4em Verdana,sans-serif; }
+      .error { color: red; }
+		</style> -->
+    <link href="images/regstyle.css" rel="stylesheet" type="text/css">
+	</head>
+
+	<body>
+  <div class="heed"><h1>GBSFM</h1></div>
+  <div class="playlist">
+    <p class="regreg">Register:</p>
+    {% if error %}
+    <span class="error">{{error}}</span>
+    {% endif %}
+    <form enctype="multipart/form-data" action="{% url 'register' %}" method="POST">
+      {{ form.as_p }}
+      <p>Now put your verification code, <em>{{authcode}}</em>, anywhere in the About Me, Location, Occupation or Interest fields of your <a href="https://forums.somethingawful.com/member.php?action=editprofile">Something Awful profile</a> and press the button below.</p>
+      <p>If you need assistance, find us on <a href="https://discordapp.com/invite/5rsyDSj">Discord. We can also help you get an account if you for some reason can't access your Something Awful profile.</a></p>
+      <input type="submit" value="Verify Account and Register" />
+      <!-- <p>If you don't have an SA account or encounter any other problem, please email <a href="mailto:jonnty@gbs.fm">jonnty@gbs.fm</a>.</p> -->
+    </form>
+	</div>
+	</body>
+</html>
+
+
+

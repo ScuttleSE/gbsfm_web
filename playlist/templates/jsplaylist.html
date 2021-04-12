@@ -1,0 +1,164 @@
+{% extends "master.html" %}
+{% block title %}{{now_playing.metadataString}} - GBS-FM{% endblock %}
+{% load filters %}
+
+{% block head %}
+
+
+<script type="text/javascript">
+
+var getLastEntry = function(){
+  return $('#playlist > :last-child').attr('id');
+}
+
+/*
+* Get the entry ID of the currently playing track
+*/
+function getNowPlayingID() {
+  return $(".playing").attr('id')
+}
+
+var stom = function(time){
+  seconds = time%60;
+  minutes = parseInt(time/60);
+  if (seconds < 10) {
+    seconds = "0" + seconds.toString(); //add zero to single digit numbers
+  } else {
+    seconds = seconds.toString();
+  }
+  return minutes.toString() + ':' + seconds;
+}
+
+var stripe = function(data) {
+  if($('#playlist tr:first').hasClass('odd')) {
+    $('#playlist tr:nth-child(odd)').removeClass('even').addClass('odd');
+    $('#playlist tr:nth-child(even)').removeClass('odd').addClass('even');
+  } else {
+    $('#playlist tr:nth-child(even)').removeClass('even').addClass('odd');
+    $('#playlist tr:nth-child(odd)').removeClass('odd').addClass('even');
+  }
+}
+
+var pruneHandler = function(){
+  oldplaylist = $(".history");
+  for (var i=0; i<(oldplaylist.length - 11); i++) { //TODO historylength (10) should be a user setting so need to fix somehow
+    //(but it's +1 for weird reasons I can't quite discern)
+    $(oldplaylist[i]).fadeOut('slow', removeCallback);
+  }
+}
+
+
+
+/**
+* Main loop: handles all periodic calls
+**/
+function funLoop() {
+  pruneHandler();
+  stripe();
+  setTimeout('funLoop()', DELAY);
+}
+
+var removeCallback = function() {
+  $(this).remove();
+}
+
+
+/** event callbacks **/
+function removalHandler(e, data) {
+  removal = $(document.getElementById(data['entryid']));
+  if (!removal.hasClass("playing")) { //if it's playing, it should stay there and become historical
+    removal.fadeOut("slow", removeCallback);
+  }
+  ajax_args['last_removal'] = data['id'];
+}
+
+function addsHandler(e, html) {
+  lastentry = $('#playlist > :last-child');
+  newentry = lastentry.after(html);
+  ajax_args['last_add'] = getLastEntry();
+}
+
+function nowPlayingHandler(e, entryid) {
+  currplaying = $(".playing");
+  currplaying.removeClass('playing');
+  currplaying.addClass('history');
+  //remove irrelevent action buttons
+  currplaying.children(".actions").children(".skip").hide();
+  nextplaying = $(document.getElementById(entryid));
+  nextplaying.addClass('playing');
+  //change action buttons
+  nextplaying.children(".actions").children(".remove").hide();
+  nextplaying.children(".actions").children(".skip").show();
+  ajax_args['now_playing'] = getNowPlayingID();
+}
+
+function metadataHandler(e, metadata) {
+  pltitle = metadata + " - GBS-FM";
+  if ($("title").html() != pltitle) {
+    $("title").html(pltitle);
+  }
+}
+
+function pllengthHandler(e, html) {
+  length = $("#length")
+  if (length.html() != html) {
+      length.html(html);
+  }
+}
+
+
+$(document).ready(function(){
+  //ajax calls & event handler bindings
+  //TODO: do this automatically with just the events and args or something
+  ajax_args['last_removal'] = {{ lastremoval|default:"0" }};
+  $('body').bind('removal', removalHandler);
+
+  ajax_args['last_add'] = getLastEntry();
+  $('body').bind('adds', addsHandler);
+
+  ajax_args['now_playing'] = getNowPlayingID();
+  $('body').bind('now_playing', nowPlayingHandler);
+
+  //no-arg event handlers
+  $('body').bind('metadata', metadataHandler);
+  $('body').bind('pllength', pllengthHandler);
+  funLoop();
+
+});
+
+</script>
+
+
+{% endblock %}
+
+{% block main %}
+  {% if welcome_message %}
+  <p id="noticearea">{{welcome_message|safe}}</p>
+  {% endif %}
+    {% if msg %}<p id="messages">{{msg}}</p>{% endif %}
+    {% if aug_playlist %}
+    <table class="playlist" id="playlisttable">
+    <tbody id='playlist'>
+      {% if user.userprofile.tokens %}
+        <tr><th colspan="8" class="plinfo">
+          You have {{user.userprofile.tokens}} token{{user.userprofile.tokens|pluralize}}, so you can add extra dongs to the playlist!
+        </th></tr>
+      {% endif %}
+      <tr><th colspan="8" id="length">{% include "pl_length.html" %}</th></tr>
+      <tr id='columns'>
+        <th>Artist</th>
+        <th>Title</th>
+        <th>Time</th>
+        <th>Added by</th>
+        <th>Vote</th>
+        <th>Score</th>
+        <th>Farts</th>
+        <th>Actions</th>
+      </tr>
+      {% include "playlist_table.html" %}
+    </tbody>
+    </table>
+    {% else %}
+    <p>Playlist empty!</p>
+    {% endif %}
+{% endblock %}

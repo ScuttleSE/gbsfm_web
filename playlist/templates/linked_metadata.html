@@ -1,0 +1,1 @@
+{% if now_playing %}<a href="{% url 'artist' now_playing.artist.id %}">{{now_playing.artist.name}}</a> (<a href="{% url 'album' now_playing.album.id %}">{{now_playing.album.name}}</a>) - <a href="{% url 'song' now_playing.id %}">{{now_playing.title}}</a>{% else %}Nothing playing!{% endif %}

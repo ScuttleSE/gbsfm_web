@@ -1,0 +1,28 @@
+{% extends "master.html" %}
+
+{% block title %}Upload - GBS-FM{% endblock %}
+
+{% block main %} 
+	<div class="playlist">
+    {% if message %}
+    {{ message }}
+    {% endif %}
+    <p>Upload mp3 files here. Make sure the tags make sense!</p>
+    <p>&lt;DaWolfey&gt; upload away, but for the love of god, search first</p>
+    <form enctype="multipart/form-data" action="/upload" method="POST">
+    <table>
+      {{ form.as_p }}
+      <input type="submit" value="Submit" />
+    </table>
+    <p>(<em style="font-style: normal; font-weight: bold">FTP upload</em> now available at gbs.fm on port 2100)</p>
+    {% if uploads %}
+    <p>Last ten uploads:</p>
+    <ul>
+      {% for upload in uploads %}
+      <li><a href="{% url 'song' upload.id %}">{{upload.metadataString}}</a></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    </form>
+	</div>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends "master.html" %}
+
+{% block title %}{{song.title}} - GBS-FM{% endblock %}
+
+{% load filters %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+<div class="song">
+<!--<img class="centecool you worthless nerd   r" src = "images/down.png" style="float: left;">
+<img class="center" src = "images/down.png" style="float: right;">-->
+<div style="float: right; font-size: 24px; font-weight: bold; color: grey;">{{song.id}}</div>
+<table>
+<tr> 
+  <th class="song" colspan="2">Dong 
+  </th>
+</tr>
+<tr>
+    <td colspan="2">
+      <a href='{% url 'song' song.id "/edit" %}'>
+        <img src="/images/page_edit.png" title="Edit dong info" alt="edit" />
+      </a>
+
+      {% if can_delete %}
+        <a href='{% url 'deletesong' song.id %}'>
+          <img src="/images/cross.png" title="Delete dong" alt="delete" />
+        </a>
+      {% endif %}
+      {% if favourite %}
+        <a href='{% url 'unfavourite' song.id %}'>
+          <img src="/images/heart_delete.png" title="Unfavourite this dong" alt="unfavourite" />
+        </a>
+      {% else %}
+        <a href='{% url 'favourite' song.id %}'>
+          {% if request.user.username != "Beelzebozo" %}
+            <img src="images/heart_add.png" title="Add this dong to your favourites" alt="favourite" />
+          {% else %}
+            <img src="images/heart_add_beelz.png" title="Add this dong to your favourites" alt="favourite" />
+          {% endif %}
+        </a>
+      {% endif %}
+      <a href='{% url 'song_report' song.id %}'>
+        <img src="images/exclamation.png" title="Report this dong" alt="report" />
+      </a>
+    </td>
+{% if edit %}
+<form action='{% url 'song' song.id %}' method="post">
+    {% for field in editform %}
+      {% ifequal field.label "Artist" %}
+      <tr>
+        <td>{{ field.label_tag }}:</td>
+        <td>
+          {{ field.errors }}
+          <input id="id_artist" type="text" name="artist" value="{{song.artist.name}}" maxlength="300" />
+        </td>
+      </tr>
+      {% else %}
+      {% ifequal field.label "Album" %}
+      <tr>
+        <td>{{ field.label_tag }}:</td>
+        <td>
+          {{ field.errors }}
+          <input id="id_album" type="text" name="album" value="{{song.album.name}}" maxlength="300" />
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td>{{ field.label_tag }}:</td>
+        <td>
+          {{ field.errors }}
+          {{ field }}
+        </td>
+      </tr>
+      {% endifequal %}
+      {% endifequal %}
+    {% endfor %}
+<input type="submit" value="Update" />
+</form>
+{% else %}
+  
+  <tr>
+    <td>Artist:</td>
+    <td class="details"><a href='{% url 'artist' song.artist.id %}'>{{ song.artist }}</a></td>
+  </tr>
+  <tr>
+    <td>Album:</td>
+    <td class="details">
+      <a href='{% url 'album' song.album.id %}'>{{ song.album }}</a> {% if song.track %}(track {{song.track}}){% endif %}
+    </td>
+  </tr>
+  <tr>
+    <td>Title:</td>
+    <td class="details"><a href='{% url 'song' song.id %}'>{{ song.title }}</a></td>
+  </tr>
+  <tr>
+    <td>Composer:</td>
+    <td class="details">{{song.composer}}</td>
+  </tr>
+  <tr>
+    <td>Remixer:</td>
+    <td class="details">{{song.remixer}}</td>
+  </tr>
+  <tr>
+    <td>Genre(s):</td>
+    <td class="details">{{song.genre}}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>Length:</td>
+    <td class="details">{{song.length|stom}}</td>
+  </tr>
+  <tr>
+    <td>Bitrate:</td>
+    <td class="details">{{song.bitrate}}kbps</td>
+  </tr>
+  <tr>
+    <td>Date uploaded:</td>
+    <td class="details">{{song.add_date|date:"D jS M Y \a\t g:i:s A"}}</td>
+  </tr>
+  <tr>
+    <td>Uploader:</td>
+    <td class="details"><a href="{% url 'user' song.uploader.id%}">{{song.uploader}}</a></td>
+  </tr>
+  <tr>
+    <td>Playcount:</td>
+    <td class="details">{{song.getPlayCount}}</td>
+  </tr>
+  <tr>
+    <td>Score:</td>
+    <td class="details">{{song.avgscore}} with {{song.voteno}} votes.</td>
+  </tr>
+  {% if perms.playlist.merge_song %}
+  <tr>
+    <td>Merge:</td>
+    <td>Nice way not done yet, use song/1/merge/2, which will merge song 2 into song 1, deleting song 2
+  </tr>
+  {% endif %}
+  {% if path %}<tr>
+    <td>Filepath:</td>
+    <td class="details">
+      {% if perms.playlist.download_song %}
+        <a href="{% url 'download_song' song.id %}">
+          {{path}}
+        </a>
+      {% else %}
+        {{path}}
+      {% endif %}
+    </td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>Vote:</td>
+    <td class="details">
+      <a {% ifequal vote 1 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "1" %}">1</a>
+      <a {% ifequal vote 2 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "2" %}">2</a>
+      <a {% ifequal vote 3 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "3" %}">3</a>
+      <a {% ifequal vote 4 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "4" %}">4</a>
+      <a {% ifequal vote 5 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "5" %}">5</a>
+    </td>
+  </tr>  
+  <tr>
+    <td>Add to playlist:</td>
+    <td>{% include "add.html" %}</td>
+  </tr>
+  {% if can_ban and not song.banned %}
+  <form action='{% url 'bansong' song.id%}' method="post">
+  <tr>
+    <td>Ban:</td>
+    <td><input id="id_reason" type="text" name="reason" maxlength="100" /></td>
+    <!--<td><input type="submit" value="Ban" /></td>-->
+  </tr>
+  </form>
+  {% endif %}
+</table>
+<table>
+{% if song.banned %}
+<tr>
+  <th class="song" colspan="4">
+    Banned {% if can_ban %}
+      <a href="{% url 'unbansong' song.id 0 %}">(unban)</a>
+      <a href="{% url 'unbansong' song.id 1 %}">(one play)</a>
+      {% endif %}
+  </th>
+</tr>
+<tr>
+  <td colspan="4">{{ song.banreason }}</td>
+</tr>
+{% endif %}
+
+{% if ratings %}
+<tr> <th class="song" colspan="4">Vote breakdown</th> </tr>
+{% for score, count in ratings.items %}
+  <tr>
+    <td colspan="4">{{score}}: {{count}}</td>
+  </tr>
+{% endfor %}
+{% endif %}
+
+{% if addhistory %}
+<tr> <th class="song" colspan="4">Add history</th> </tr>
+{% for add in addhistory %}
+  <tr>
+    <td colspan="4">{{add.id}} - {{add.addtime|date:"D jS M Y \a\t g:i:s A"}} added by {{add.adder.username}}</td>
+  </tr>
+{% endfor %}
+{% endif %}
+
+<tr> <th class="song" colspan="4">Comments</th> </tr>
+<tr>
+  <td>{{ currentuser.username }}</td>
+  <td><!--0.00--></td>
+  <form action='{% url 'comment' song.id%}' method="post">
+  <td><input id="id_comment" type="text" name="comment" maxlength="400" /></td>
+  <td><input type="submit" value="Comment" /></td>
+  </form>
+</tr>
+{% for comment in comments %}
+<tr>
+  <td>{{ comment.user.username }}</td>
+  
+  <td>
+  {% if comment.time %}
+    {{comment.time|stom}}
+  {% endif %}
+  </td>
+  
+  
+  <td>{{ comment.text|safe }}</td>
+  <td>{{ comment.datetime|date:"D jS M Y \a\t g:i:s A" }}</td>
+  <td>
+    {% if perms.playlist.delete_comment or comment.user == request.user %}
+      <a href="{% url 'delete_comment' commentid=comment.id %}">
+        <img src="images/cross.png" title="Delete this comment" alt="delete" />
+      </a>
+    {% endif %}
+<tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %} 

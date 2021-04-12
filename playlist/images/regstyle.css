@@ -1,0 +1,79 @@
+body, th, td {
+  font:12px/1.4em Verdana,sans-serif;
+}
+body {
+  background-image:url('bodystripes3.png');
+}
+a img {
+  border-width: 0px;
+}
+div.playlist {
+  border:1px solid black;
+  margin-left:auto;
+  margin-right:auto;
+  width:640px;
+  background-color:#F9FBF5;
+}
+ul {
+  float:right;
+  margin-right:200px;
+  list-style:url('arrow.png');
+  color:red;
+  font-size:larger;
+  padding-top:5px;
+}
+label, input {
+  display:block;
+  font-size:larger;
+}
+form, .note {
+  margin-left:40px;
+  padding-top:20px;
+  font-size:smaller;
+}
+form input {
+  border:1px solid #999F99;
+}
+#id_randcode {
+  border:0px;
+}
+div.playlist p.regreg {
+  border:1px solid black;
+  padding: 3px;
+  margin-left:10px;
+  position:absolute;
+  background-color:#F9FBF5;
+  margin-top:-10px;
+  font-size:large;
+  font-weight:bold;
+}
+div.heed {
+  border-width:1px 1px 0px 1px;
+  border-style:solid;
+  border-color:black;
+  margin-left:auto;
+  margin-right:auto;
+  margin-top:100px;
+  width:640px;
+  background-color:#F9FBF5;
+  height:64px;
+  text-align:center;
+  vertical-align:middle;
+}
+div.heed h1 {
+  font-size:32px;
+}
+em {
+  font-style: normal;
+  font-weight: bold;
+}
+span.error {
+  display:block;
+  margin-top:1.5em;
+  margin-left:50px;
+  border:1px solid red;
+  color:#A00;
+  background-color:#FEE;
+  max-width:540px;
+  word-wrap:break-word; /* CSS3. works on firefox at the time of writing */
+}

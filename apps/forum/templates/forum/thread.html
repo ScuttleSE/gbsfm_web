@@ -1,0 +1,68 @@
+{% extends "forum_base.html" %}
+{% load i18n filters %}
+{% block title %}{{ thread.title|escape }} ({{ forum.title }}){% endblock %}
+
+{% block pagetitle %}{{ forum.title }} &raquo; {{ thread.title|escape }}{% endblock %}
+
+
+{% block breadcrumbs %}{% for title, url in thread.forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a>{% endfor %} &raquo; <a href='{{ thread.get_absolute_url }}'>{{ thread.title|escape }}</a> ({{ thread.posts }} {% blocktrans count thread.posts as counter %}post{% plural %}posts{% endblocktrans %}){% endblock %}
+
+{% block content %}
+<p class="forumThreadModActions">
+{% if can_sticky %}
+{% if thread.sticky %}<a href="{% url 'mod_action' thread.id 'unsticky' %}">(unsticky this)</a>{% else %}<a href="{% url 'mod_action' thread.id "sticky" %}">(sticky this)</a>{% endif %}
+{% endif %}
+{% if can_lock %}
+{% if thread.closed %}<a href="{% url 'mod_action' thread.id 'unlock' %}">(unlock this)</a>{% else %}<a href="{% url 'mod_action' thread.id "lock" %}">(lock this)</a>{% endif %}
+{% endif %}
+</p>
+<table id='djangoForumThreadPosts'>
+{% for post in post_list %}
+<tr>
+<th class='djangoForumThreadPostDetail' id='post{{ post.id }}'>{% blocktrans with post.time|timesince as time %}{{ time }} ago{% endblocktrans %}<br />
+{% if not thread.forum.anonymous %}{% trans "by" %} <strong>{{ post.author }}</strong>{% endif %}{% if post.can_edit %}<br />
+<a href="{% url 'thread_post_edit' thread.id post.id %}?page={{page}}#post{{post.id}}">(edit)</a>{% endif %}</th>
+{% ifequal editid post.id %}
+<td><form method='post' action='{% url 'post_edit' post.id %}'>
+<p>{{edit_form.body}}</p>
+<p><input type='submit' value='Update' /></p>
+</form></td>
+{% else %}
+<td>{{ post.body|bbcode }}</td>
+{% endifequal %}
+</tr>{% endfor %}
+<tr>
+<th class='djangoForumThreadPostDetail' id='newpost'>{% blocktrans %}now{% endblocktrans %}<br />
+{% if not thread.forum.anonymous %}{% trans "by" %} <strong>{{ user.username }}</strong>{% endif %}
+</th>
+<td>
+{% if user.is_authenticated and not thread.closed%}
+  <form method='post' action='reply/'>
+    {{form.body.errors}}
+    <textarea style="width: 97%; height: 15em; border: 1px solid; padding: 3px;" class="replybox" name="body" id="id_body"></textarea>
+<input type='submit' value='{% trans "Submit" %}' />
+</form>
+</td>
+</tr>
+{% endif %}
+</table>
+
+{% if is_paginated %}
+<ul>
+  <li class="djangoForumPagination"><a href="?page=1">{% trans "First" %}</a></li>
+{% for page_number in paginator.page_range %}
+  <li class="djangoForumPagination"><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+{% endfor %}
+  <li class="djangoForumPagination"><a href="?page={{ paginator.num_pages }}">{% trans "Last" %}</a></li>
+</ul>
+{% endif %}
+
+{% if request.user.is_authenticated %}<p><a href="{% url 'forum_subscriptions' %}">{% trans "Update Subscriptions" %}</a></p>{% endif %}
+{% if thread.closed %}
+<p>{% trans "No replies allowed: this thread is locked." %}</p>
+{% endif %}
+{% if not user.is_authenticated and not thread.closed%}
+<p>{% trans "Please login to post a reply." %}</p>
+{% endif %}
+
+{% endblock %}

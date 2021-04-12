@@ -1,0 +1,77 @@
+{% extends "master.html" %}
+
+{% block title %}{% if query %}{{query}} - {% endif %} Search - GBS-FM{% endblock %}
+{% load filters %}
+
+{% block main %}
+  <div class="playlist">
+    <form action='{% url 'search' %}' method="GET">
+    <p>
+      {{ form.query }} 
+    </p>
+    <p>
+      <input type="submit" value="Search" />
+    </p>
+    <p>
+      {{ form.query.errors }}
+    </p>
+
+    </form>
+  
+  {% if artists or songs.object_list or albums%}
+  {% if artists %}
+  <p class="artists">Artist{{ artists|length|pluralize }}:
+    {% for artist in artists|slice:":-1" %}
+      <a href="{% url 'artist' artist.id %}">{{artist.name}}</a>,
+    {% endfor %}
+    {% for artist in artists|slice:"-1:" %}
+      <a href="{% url 'artist' artist.id %}">{{artist.name}}</a>.
+    {% endfor %}
+  </p>
+  {% endif %}
+  {% if albums %}
+  <p class="artists">Album{{ albums|length|pluralize }}:
+    {% for album in albums|slice:":-1" %}
+      <a href="{% url 'album' album.id %}">{{album.name}}</a>,
+    {% endfor %}
+    {% for album in albums|slice:"-1:" %}
+      <a href="{% url 'album' album.id %}">{{album.name}}</a>.
+    {% endfor %}
+  </p>
+  {% endif %}
+  {% if songs.object_list %}
+  
+  {% if artists.has_previous %}
+      <a href="{% url 'search' %}?page={{ songs.previous_page_number }}&query={{query}}">&lt;&lt;</a>
+    {% endif %}
+    Results: page {{ songs.number }} of {{ songs.paginator.num_pages }}
+    {% if songs.has_next %}
+      <a href="{% url 'search' %}?page={{ songs.next_page_number }}&query={{query}}">&gt;&gt;</a>
+  {% endif %}
+    
+  <table width="620" class="songs">
+    <tr id="columns">
+      <th>Artist</th>
+      <th>Title</th>
+      <th>Time</th>
+      <th>Uploaded by</th>
+      <th>Add</th>
+    </tr>
+    {% for song in songs.object_list %}
+    <tr class="{% if song.banned %} banned {% endif %} {% cycle 'odd ' 'even ' %}">
+      <td><a href='{% url 'artist' song.artist.id %}'>{{ song.artist }}</a></td>
+      <td><a href='{% url 'song' song.id %}'>{{ song.title }}</a></td>
+      <td>{{ song.length|stom }}</td>
+      <td><a href='{% url 'user' song.uploader.id %}'>{{ song.uploader.username }}</a></td>
+      <td>{% include "add.html" %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {% else %}
+  {% if query %}
+  <p>No exact dong/artist matches for search "{{query}}", sorry.</p>
+  {% endif %}
+  {% endif %}
+  </div>
+{% endblock %} 

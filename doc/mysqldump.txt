@@ -1,0 +1,2 @@
+mysqldump -h 192.168.10.2 -pPASSWORD -u USERNAME --skip-opt --skip-comments --compact gbsfm > dump_YYMMDD.sql
+

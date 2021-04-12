@@ -1,0 +1,14 @@
+Config for nginx/lighttpd and uwsgi, fill in as appropriate
+
+lighttpd docs:
+
+https://redmine.lighttpd.net/projects/1/wiki/Docs_ModSCGI
+https://uwsgi-docs.readthedocs.io/en/latest/Lighttpd.html
+
+nginx docs:
+
+https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
+
+gunicorn (for reference):
+
+http://docs.gunicorn.org/en/latest/deploy.html
