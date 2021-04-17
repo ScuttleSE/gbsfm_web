@@ -67,6 +67,15 @@
     </tr>
     {% endfor %}
   </table>
+
+  {% if artists.has_previous %}
+      <a href="{% url 'search' %}?page={{ songs.previous_page_number }}&query={{query}}">&lt;&lt;</a>
+    {% endif %}
+    Results: page {{ songs.number }} of {{ songs.paginator.num_pages }}
+    {% if songs.has_next %}
+      <a href="{% url 'search' %}?page={{ songs.next_page_number }}&query={{query}}">&gt;&gt;</a>
+  {% endif %}
+
   {% endif %}
   {% else %}
   {% if query %}
