@@ -169,22 +169,26 @@ class UploadedFile:
     except ValueError:
       #handle tracknumbers like 11/12 meaning 'track eleven of twelve'
       #basically just extract the initial int
-      failed_trackparse = False
-      tags['track']  = ""
+      tags['track'] = ""
       for char in track:
         try:
           tags['track'] += str(int(char))
         except ValueError:
-          failed_trackparse = True
           break
 
     #Try converting tracks like A1 B2 etc to int
-    if failed_trackparse:
-      tags['track'] = ""
+    try:
+      if 'track' not in tags or tags['track'] is None:
+        tags['track'] = int(track)
+      else:
+        tags['track'] = int(tags['track'])
+    except ValueError:
       try:
         # Converts A to 0, B to 1 etc
-        tags['track'] = str(int(str(ord(track[0]) - 97) + str(track[1:])))
+        tags['track'] = int(str(ord(track[0]) - 97) + str(track[1:]))
       except ValueError:
+        # strip track so backend does not crash if not parseable
+        tags['track'] = ""
         pass
             
     self.info.update(tags)
