@@ -185,11 +185,10 @@ class UploadedFile:
     except ValueError:
       try:
         # Converts A to 0, B to 1 etc
-        tags['track'] = int(str(ord(track[0]) - 97) + str(track[1:]))
+        tags['track'] = int(str(ord(track[0].upper()) - 65) + str(track[1:]))
       except ValueError:
         # strip track so backend does not crash if not parseable
         tags['track'] = ""
-        pass
             
     self.info.update(tags)
 
