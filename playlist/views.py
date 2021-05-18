@@ -518,7 +518,7 @@ def api(request, resource=""):
     if unplayed: #only use it if there are actually unplayed songs!
       songs = unplayed
     try:
-      song = random.choice(songs)
+      song = random.SystemRandom().choice(songs)
     except:
       raise Http404
 
