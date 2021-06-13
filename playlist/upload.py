@@ -70,8 +70,8 @@ class UploadedFile:
   def _get(self, song, key, default):
     """Returns the value for key in song, replacing it with default if necessary
     and removing it from list."""
-	if not song:
-		return default
+    if not song:
+      return default
     value = song.get(key, default)
     try:
       value = value[0]
