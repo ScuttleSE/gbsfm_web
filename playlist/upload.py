@@ -165,12 +165,12 @@ class UploadedFile:
     tags = {}
     tags['format'] = "vqf"
     self.info.update(tags)
-	self._fillInfoTags(None)
+    self._fillInfoTags(None)
 
 
   def _fillMP2Tags(self):
     # No mutagen support
-	tags = {}
+    tags = {}
     tags['format'] = "mp2"
     self.info.update(tags) 
     self._fillInfoTags(None)
