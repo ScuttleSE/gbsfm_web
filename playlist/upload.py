@@ -5,6 +5,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from mutagen.oggvorbis import OggVorbis
+from mutagen.oggopus import OggOpus
 from mutagen.easymp4 import EasyMP4
 from mutagen.mp3 import HeaderNotFoundError
 import hashlib
@@ -16,7 +17,7 @@ class UnsupportedFormatError(Exception): pass
 class CorruptFileError(Exception): pass
 
 class UploadedFile:
-  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'vqf', 'mp2'] #TODO: make this a config option for god's sake
+  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2'] #TODO: make this a config option for god's sake
   def __init__(self, file, realname=None, filetype=None):
     
     self.type = filetype
@@ -149,9 +150,34 @@ class UploadedFile:
     self.info.update(tags)
     
     self._fillInfoTags(song)
+
+  def _fillWEBMTags(self):
+    """Returns dict with tags and stuff"""
+    try:
+      song = OggOpus(self.file)
+    except HeaderNotFoundError:
+      raise CorruptFileError
     
+    tags = {}
+    tags['length'] = round(song.info.length)
+    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
+    tags['format'] = "webm"
+    self.info.update(tags)
     
-  def _fillInfoTags(self, song):
+    self._fillInfoTags(song)
+    
+
+def _fillVQFTags(self)
+    # No mutagen support
+    return
+
+
+def _fillMP2Tags(self):
+    # No mutagen support
+    return
+
+
+def _fillInfoTags(self, song):
     """Fill the main bulk of tags, like title, artist etc, which are generally uniform
     across formats"""
     
