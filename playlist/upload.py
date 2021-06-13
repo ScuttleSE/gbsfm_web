@@ -153,29 +153,27 @@ class UploadedFile:
     self._fillInfoTags(song)
 
   def _fillWEBMTags(self):
-    """Returns dict with tags and stuff"""
-    try:
-      song = File(self.file)
-    except HeaderNotFoundError:
-      raise CorruptFileError
-    
+    # No mutagen support
     tags = {}
-    tags['length'] = round(song.info.length)
-    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
     tags['format'] = "opus"
     self.info.update(tags)
-    
-    self._fillInfoTags(song)
-    
+    self._fillInfoTags(None)
+
 
   def _fillVQFTags(self):
     # No mutagen support
-    return
+    tags = {}
+    tags['format'] = "vqf"
+    self.info.update(tags)
+    self._fillInfoTags(None)
 
 
   def _fillMP2Tags(self):
     # No mutagen support
-    return
+    tags = {}
+    tags['format'] = "mp2"
+    self.info.update(tags) 
+    self._fillInfoTags(None)
 
 
   def _fillInfoTags(self, song):
