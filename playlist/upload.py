@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import os.path
+from mutagen import File
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
@@ -154,30 +155,30 @@ class UploadedFile:
   def _fillWEBMTags(self):
     """Returns dict with tags and stuff"""
     try:
-      song = OggOpus(self.file)
+      song = File(self.file)
     except HeaderNotFoundError:
       raise CorruptFileError
     
     tags = {}
     tags['length'] = round(song.info.length)
     tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
-    tags['format'] = "webm"
+    tags['format'] = "opus"
     self.info.update(tags)
     
     self._fillInfoTags(song)
     
 
-def _fillVQFTags(self):
+  def _fillVQFTags(self):
     # No mutagen support
     return
 
 
-def _fillMP2Tags(self):
+  def _fillMP2Tags(self):
     # No mutagen support
     return
 
 
-def _fillInfoTags(self, song):
+  def _fillInfoTags(self, song):
     """Fill the main bulk of tags, like title, artist etc, which are generally uniform
     across formats"""
     
