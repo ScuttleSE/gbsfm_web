@@ -167,7 +167,7 @@ class UploadedFile:
     self._fillInfoTags(song)
     
 
-def _fillVQFTags(self)
+def _fillVQFTags(self):
     # No mutagen support
     return
 
