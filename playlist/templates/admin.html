@@ -1,16 +1,17 @@
 {% extends "master.html" %}
 
 {% block title %}Admin - GBS-FM{% endblock %}
-  
+
 {% block main %}
   <div class="playlist">
     <p><a href="{% url 'start_metadataupdater' %}" class="button">Start metadata updater</a></p> This is the process that makes sure that the metadata in the stream matches the metadata in the database
+    <p><a href="{% url 'stop_metadataupdater' %}" class="button">Stop metadata updater</a></p> If someone is livestreaming, use this.
     <p><a href="{% url 'start_listeners' %}" class="button">Start listener updater</a></p> This is the process that makes sure that the listener count on the website updates
     <p><a href="{% url 'start_remaining' %}" class="button">Start remaining time updater</a></p> This is the process that makes sure that the progress bar in the bottom right updates
     <hr>
-    <p><a href="{% url 'restart_linkbot' %}" class="button">Restart Shoes_Linkbot (Discord/IRC)</a></p>    
-    <p><a href="{% url 'restart_socks' %}" class="button">Restart Socks (IRC)</a></p>    
-    <p><a href="{% url 'restart_shoes' %}" class="button">Restart Shoes (Discord)</a></p>    
+    <p><a href="{% url 'restart_linkbot' %}" class="button">Restart Shoes_Linkbot (Discord/IRC)</a></p>
+    <p><a href="{% url 'restart_socks' %}" class="button">Restart Socks (IRC)</a></p>
+    <p><a href="{% url 'restart_shoes' %}" class="button">Restart Shoes (Discord)</a></p>
     <p>If/when you restart one of the bots, please give it at least a minute before trying again.
     <hr>
     <p><a href="{% url 'restart_ftp' %}" class="button">Restarts the FTP-server</a></p>
@@ -38,5 +39,5 @@
 
 
   </div>
- 
-{% endblock %} 
+
+{% endblock %}
