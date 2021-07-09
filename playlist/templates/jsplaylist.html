@@ -140,7 +140,7 @@ $(document).ready(function(){
     <table class="playlist" id="playlisttable">
     <tbody id='playlist'>
       {% if user.userprofile.tokens %}
-        <tr><th colspan="8" class="plinfo">
+        <tr><th colspan="9" class="plinfo">
           You have {{user.userprofile.tokens}} token{{user.userprofile.tokens|pluralize}}, so you can add extra dongs to the playlist!
         </th></tr>
       {% endif %}
