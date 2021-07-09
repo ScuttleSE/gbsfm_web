@@ -78,6 +78,10 @@ def start_metadataupdater():
   Popen(["nohup", "/home/gbsfm/metadataupdater.sh", ">/dev/null", "2>&1&"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
+def stop_metadataupdater():
+  Popen(["killall", "-r", "metadataupdater.sh"], \
+  stdin=None, stdout=None, stderr=None, close_fds=True)
+
 def start_listeners():
   Popen(["killall", "-r", "listeners.sh"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)

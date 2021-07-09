@@ -83,6 +83,11 @@ def start_metadataupdater(request):
   return HttpResponseRedirect(reverse('g2admin'))
 
 @permission_required('playlist.start_stream')
+def stop_metadataupdater(request):
+  utils.stop_metadataupdater()
+  return HttpResponseRedirect(reverse('g2admin'))
+
+@permission_required('playlist.start_stream')
 def start_listeners(request):
   utils.start_listeners()
   return HttpResponseRedirect(reverse('g2admin'))
