@@ -53,8 +53,7 @@ def start_ftp():
   os.chdir(olddir)
 
 def restart_ftp():
-  Popen(["/home/gbsfm/restartjobs.sh", "gbsfm_ftprestart"], \
-  stdin=None, stdout=None, stderr=None, close_fds=True)
+  Popen(["/home/gbsfm/restartjobs.sh", "gbsfm_ftprestart"])
 
 def start_stream2():
   Popen(["killall", "-KILL", "ices"]).wait()
