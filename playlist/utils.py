@@ -53,7 +53,7 @@ def start_ftp():
   os.chdir(olddir)
 
 def restart_ftp():
-  Popen(["curl", "-k", "-X", "POST", "-F", "token=5525978610db3c2b32302af0105e11", "-F", "ref=master", "https://gitlab.hemma.lokal/api/v4/projects/49/trigger/pipeline"], \
+  Popen(["/home/gbsfm/restartjobs.sh", "gbsfm_ftprestart"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_stream2():
