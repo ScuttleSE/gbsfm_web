@@ -351,8 +351,8 @@ div#carplayvotebuttonslow {
   width:600px;
   font-size:30px;
   margin:5px 5px 2px 5px;
-  position:fixed;
-  bottom:4px;
+  /* position:fixed;
+  bottom:4px; */
 }
 div#carplayvotebuttonslow a {
   text-decoration:none;
