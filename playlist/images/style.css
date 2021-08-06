@@ -299,11 +299,23 @@ div#progbarbox {
   font-size:11px;
   display:block;
 }
+div#carplayprogbarbox {
+  margin:4px 5px 0px 5px;
+  font-size:40px;
+  display:block;
+}
 div#progtube {
   width:325px;
   border:1px solid black;
   background-color:#FFF;
   height:6px;
+  margin-bottom:2px;
+}
+div#carplayprogtube {
+  width:600px;
+  border:1px solid black;
+  background-color:#FFF;
+  height:35px;
   margin-bottom:2px;
 }
 div#progbar {
