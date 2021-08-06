@@ -402,7 +402,7 @@ div#votebuttonslow a {
 }
 #carplay {
   position:fixed;
-  right:50%;
+  /* right:50%; */
   bottom:90%;
   width:60%;
   height:93px;
