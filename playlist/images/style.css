@@ -411,8 +411,15 @@ div#votebuttonslow a {
   border-radius:3px;
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
-  font-size: 40px;
 }
+
+#carplaymetadata {
+  margin-top:4px;
+  font-family:verdana;
+  font-size:40px;
+  margin-left:5px;
+}
+
 
 #expandbutt {
   float:right;
