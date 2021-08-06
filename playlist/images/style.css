@@ -321,6 +321,9 @@ div#carplayprogtube {
 div#progbar {
   height:6px;
 }
+div#carplayprogbar {
+  height:35px;
+}
 div#votebuttonslow {
   display:block;
   width:322px;
