@@ -5,8 +5,8 @@ input#id_query {
     padding-left: 3px;
 }
 a.boxed, #id_query { background:#B1D07C url('thintop1.png') repeat-x; color:#F9F00D; } /* BUTTON BG */
-a.boxed:hover { 
-  background-color:#E0F290; 
+a.boxed:hover {
+  background-color:#E0F290;
   text-decoration: none;} /* BUTTON HOVER */
 #bottomcont { background:#A1D29D url('thintop1.png') repeat-x; } /* BOTTOM BAR BG */
 #leftmenu { background:#A1D29D url('g2log3.png') no-repeat center bottom; } /* MENU BG */
@@ -64,12 +64,12 @@ body {
   height:100px;
 }
 
-#id_query { 
-  background-color:#FFF; 
+#id_query {
+  background-color:#FFF;
 }
 
-#id_query:hover { 
-  width:120px; 
+#id_query:hover {
+  width:120px;
 }
 
 
@@ -212,7 +212,7 @@ td a:hover {
 }
 td.votes, td.score {
   width:50px;
-  white-space:nowrap; 
+  white-space:nowrap;
   text-align:center;
 }
 td.emoticon {
@@ -392,6 +392,27 @@ div#votebuttonslow a {
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
 }
+
+#carplay a {
+  text-decoration:none;
+  color:#000;
+}
+#carplay a:hover {
+  text-decoration:underline;
+}
+#carplay {
+  position:fixed;
+  right:50%;
+  bottom:90%;
+  width:339px;
+  height:93px;
+  vertical-align:top;
+  border:1px inset #666;
+  border-radius:3px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+}
+
 #expandbutt {
   float:right;
   width:7px;
@@ -624,7 +645,7 @@ td.emoted { }
 }
 
 #djangoForumThreadPosts a {
-  color:#00F;text-decoration:underline; 
+  color:#00F;text-decoration:underline;
 }
 
 #djangoForumBreadcrumbs {
