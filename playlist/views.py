@@ -193,6 +193,9 @@ def playlist(request, lastid=None):
     return HttpResponseRedirect("/images/moved.html")
   return jsplaylist(request, lastid)
 
+@permission_required('playlist.view_playlist')
+def carplay(request, lastid=None):
+  return render(request, 'carplay.html')
 
 def jsplaylist(request, lastid=None):
 

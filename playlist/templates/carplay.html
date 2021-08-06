@@ -1,0 +1,444 @@
+{% load filters %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>{% block title %}g2{% endblock %}</title>
+<link rel="shortcut icon" href="/images/favicon.ico" />
+<link href="images/style.css" rel="stylesheet" type="text/css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="images/swfobject.js"></script>
+<script type="text/javascript" src="images/playload.js"></script>
+<script type="text/javascript">
+
+// //alow object cloning
+// //from http://my.opera.com/GreyWyvern/blog/show.dml/1725165 (thanks to Brian Huisman)
+// Object.prototype.clone = function() {
+//   var newObj = (this instanceof Array) ? [] : {};
+//   for (i in this) {
+//     if (i == 'clone') continue;
+//     if (this[i] && typeof this[i] == "object") {
+//       newObj[i] = this[i].clone();
+//     } else newObj[i] = this[i]
+//   } return newObj;
+// };
+//
+
+
+//convert seconds to minutes:seconds
+function stom(time){
+  seconds = time%60;
+  minutes = parseInt(time/60);
+  if (seconds < 10) {
+    seconds = "0" + seconds.toString(); //add zero to single digit numbers
+  } else {
+    seconds = seconds.toString();
+  }
+  return minutes.toString() + ':' + seconds;
+}
+
+/*** vote handling stuff ***/
+
+function voteHandler(event) {
+  tgt = $(event.target);
+  votelink = event.target.href;
+  if (tgt.hasClass('voted')) {
+    //clicking again to clear vote
+    votelink = votelink.slice(0, votelink.length-1); //get rid of vote at end
+    $.get(votelink + '0'); //vote 0 to clear vote
+    tgt.removeClass("voted");
+  } else {
+    $.get(votelink);
+    tgt.parent().children().removeClass("voted");
+    tgt.addClass("voted");
+  }
+  event.preventDefault();
+}
+
+function addVoteHandlers () {
+  $("a[href*='/vote?']").not('.handled').click(voteHandler).addClass('handled');
+}
+
+/*** progress bar stuff ***/
+
+//both of these are in seconds
+var songLength = {{song_length}};
+var songPosition = {{song_position}};
+//percentage
+var songProgress = {{song_progress}};
+
+function setSongLength(length) {
+  songLength = length;
+  $('#songLength').html(stom(length));
+
+}
+
+//set numeric song position
+function setSongPosition(pos) {
+  pos = Math.round(Math.min(pos, songLength));
+  if (songPosition != pos) {
+    $('#songPosition').html(stom(pos));
+    songPosition = pos;
+    setSongProgress((pos/songLength)*100);
+  }
+  ajax_args['position'] = pos;
+}
+
+//set progressbar percentage
+function setSongProgress(percentage) {
+  $("#progbar").css("width", percentage.toString() + '%');
+  //alert(percentage.toString() * '%');
+  songProgress = percentage;
+}
+
+//Increment song position every second
+//TODO: make this more accurate using clock to avoid inaccuracies of delyed calls
+function secondLoop() {
+  setSongPosition(songPosition+1);
+  setTimeout('secondLoop()', 1000);
+}
+
+/*** Clutterbar song info stuff ***/
+
+//Set metadata to appear in clutterbar
+function setClutterMetadata(metadata) {
+  elem = $("div#metadata");
+  old = elem.html();
+  if (metadata != old) {
+    elem.html(metadata);
+  }
+}
+
+/**
+* Sets up the quick search box properly
+**/
+function setupSearch() {
+  searchbox = $('#id_query');
+  searchbox.css('color', 'grey');
+  searchbox.attr('value', "quick search"); //override browser modifications
+  searchbox.focus(function () {
+    if (searchbox.attr('value') == "quick search") {
+      searchbox.attr('value', '');
+      searchbox.css('color', 'black');
+    }
+  });
+}
+
+/**
+* Set up comment box properly
+**/
+function setupComment() {
+  $('#commentform').submit(commentSubmit);
+  commentbox = $('#commentbox');
+  commentbox.removeAttr("disabled") //enable it
+  commentbox.css('color', 'grey');
+  message = "Comment on this track here. Bad things will happen to people who use this for general chat!";
+  commentbox.attr('value', message);
+
+  commentbox.focus(function () {
+    if (commentbox.attr('value') == message) {
+      //clear it and set text to normal colour when in focus
+      commentbox.attr('value', '');
+      commentbox.css('color', 'black');
+    }
+  });
+
+  commentbox.blur(function () {
+    if (commentbox.attr('value') == '') {
+      //clear it and set text to normal colour when in focus
+      commentbox.attr('value', message);
+      commentbox.css('color', 'grey');
+    }
+  });
+}
+
+
+/**
+* Hide message box
+**/
+function hideMessages() {
+  $("p#messages").fadeOut("slow");
+}
+
+/**
+* Add comment to comment box
+**/
+function addComment(comment, time, commenter, title) {
+  elem = $("div#commentsbox");
+  elem.html("<p class='comment' title='title'>" + "@" + time + " &lt;" + commenter + "&gt; " + comment + "\n" + "</p>" + elem.html());
+}
+
+/**
+* Clear the comment box
+**/
+function clearComments() {
+  $("div#commentsbox").html("");
+}
+
+/**
+* Submit a comment entered in the comment box
+**/
+function commentSubmit() {
+  commentbox = $('#commentbox');
+  comment = commentbox.val();
+  args = {};
+  for (var i in ajax_args){
+    args[i] = ajax_args[i];
+  }
+
+  args['comment'] = comment;
+  $.getJSON("{% url 'ajax' %}", args, eventDispatcher);
+
+  commentbox.val("");
+  return false; //avoid default behaviour
+}
+
+/**
+* Score stuff
+**/
+
+function setScore(score) {
+  if (score == 0) {
+    score = "none";
+  }
+  $('#avgscore').html(score);
+  // update playlist if necessary
+  $('.playing .score').html(score);
+}
+
+function setUserVote(score) {
+  $("#votebuttonslow > .selectedvote[data-vote!="+score+"]").removeClass("selectedvote");
+  $("#votebuttonslow > *[data-vote="+score+"]").addClass("selectedvote");
+  //update playlist if necessary
+  $(".playing .votes a[data-vote!="+score+"]").removeClass("voted");
+  $(".playing .votes a[data-vote="+score+"]").addClass("voted");
+}
+
+function setupVotes() {
+  $("#votebuttonslow > a").click(function () {
+    args = {};
+    for (var i in ajax_args) {
+      args[i] = ajax_args[i];
+    }
+    button = $(this);
+    if (button.hasClass("selectedvote")) {
+      args['vote'] = 0;
+    } else {
+      args['vote'] = button.attr("data-vote");
+    }
+    $.getJSON("{% url 'ajax' %}", args, eventDispatcher);
+
+  });
+}
+
+/*** event handlers for clutterbar ***/
+
+function songLengthHandler(e, length) {
+  setSongLength(length);
+}
+
+function songPositionHandler(e, position) {
+  setSongPosition(position);
+}
+
+function linkedMetadataHandler(e, metadata) {
+  setClutterMetadata(metadata);
+}
+
+function commentHandler(e, comment) {
+  addComment(comment.body, comment.time, comment.commenter, comment.html_title);
+  ajax_args['last_comment'] = comment.id;
+}
+
+function clearCommentsHandler(e, blank) {
+  clearComments();
+  ajax_args['last_comment'] = 0;
+}
+
+function scoreHandler(e, score) {
+  setScore(score);
+}
+
+function userVoteHandler(e, score) {
+  setUserVote(score);
+}
+
+
+
+/*** event loop stuff ***/
+
+//delay between ajax calls
+DELAY = 15000;
+
+//how long messages should show for
+MESSAGES_DELAY = 5000;
+
+//associative array storing args for ajax calls
+//TODO: replace with array of functions to be called to obtain args
+
+
+
+//Called when list of events is recieved from server: triggers the correct javascript events with the correct arguments
+function eventDispatcher(data) {
+  for (i=0; i<data.length; i++) {
+    $('body').trigger(data[i][0], [data[i][1]]);
+  }
+  addVoteHandlers();
+}
+
+
+//Main AJAX loop: handles all periodic AJAX calls
+function ajaxLoop() {
+  $.getJSON("{% url 'ajax' %}", ajax_args, eventDispatcher);
+  setTimeout('ajaxLoop()', DELAY);
+}
+
+//for stored ajax args
+var ajax_args = {};
+var now_playing = {{now_playing.id|default:0}}
+$(document).ready(function(){
+
+  //song position stuff
+  setSongLength(songLength);
+  setSongPosition(songPosition);
+
+  //comment box stuff
+  setupComment();
+  setupVotes();
+
+  //add vote handlers to voting buttons
+  addVoteHandlers();
+
+  //ajax events stuff
+  ajax_args['position'] = songPosition;
+  ajax_args['last_comment'] = {{last_comment|default:0}};
+  $('body').bind('songPosition', songPositionHandler);
+  $('body').bind('songLength', songLengthHandler);
+  $('body').bind('linkedMetadata', linkedMetadataHandler);
+  $('body').bind('comment', commentHandler);
+  $('body').bind('clearComments', clearCommentsHandler);
+  $('body').bind('score', scoreHandler);
+  $('body').bind('userVote', userVoteHandler);
+
+  //loops
+  setupSearch();
+  secondLoop();
+  ajaxLoop();
+  setTimeout('hideMessages()', MESSAGES_DELAY);
+
+});
+</script>
+
+
+{% block head %}
+{% endblock %}
+</head>
+
+<body>
+
+<div id="bg1"></div>
+<div id="bg2"></div>
+<div id="leftmenu">
+<a href="{% url 'playlist' %}" id="leftmenulogo"></a>
+  <ul id="mainmenu">
+    <li><a href="{% url 'playlist' %}" class="boxed">&nbsp;playlist</a></li>
+    <li><a href="{% url 'search' %}" class="boxed">&nbsp;search</a></li>
+    <li><form action="{% url 'search' %}" method="get" class="boxed"><input accesskey="f" id="id_query" name="query" maxlength="100" type="text" value="quick search"></form></li>
+    <li><a href="{% url 'upload' %}" class="boxed">&nbsp;upload</a></li>
+    <li><a href="{% url 'search' %}?query=favourites%3D{{user.username}}" class="boxed">&nbsp;favourites</a></li>
+    <li><a href="{% url 'listartists' "all" "1" %}" class="boxed">&nbsp;artists</a></li>
+    <li><a href="{% url 'user' user.id %}" class="boxed">&nbsp;user page</a></li>
+    <li><a href="{% url 'user_settings' %}" class="boxed">&nbsp;settings</a></li>
+    <li><a href="{% url 'forum_index' %}" class="boxed">&nbsp;forums</a></li>
+    <li><a href="https://discord.gg/5rsyDSj" class="boxed">&nbsp;live chat!</a></li>
+    <li><a href="{% url 'logout' %}" class="boxed">&nbsp;logout</a></li>
+    {% if perms.playlist.view_edits %}
+    <li><a href="{% url 'edit_queue' %}" class="boxed {% if new_edits %}new{% endif %}">&nbsp;edit queue</a></li>
+    {% endif %}
+    {% if perms.playlist.approve_reports %}
+    <li><a href="{% url 'reports' %}" class="boxed {% if new_reports %}new{% endif %}">&nbsp;reports</a></li>
+    {% endif %}
+    {% if perms.playlist.view_g2admin %}
+    <li><a href="{% url 'g2admin' %}" class="boxed">&nbsp;g2 admin</a></li>
+    <!-- TODO: shut django up about the other one
+    <a href="{#{% url 'admin_site' %}#}"><li>Admin</li></a>-->
+    {% endif %}
+  </ul>
+  <p class="listenersthing">icons from <a href="http://www.famfamfam.com/lab/icons/silk/">famfamfam</a></p>
+  <p class="listenersthing" title="g2:{{gbsfm_listeners}} ghetto:{{ghetto_listeners}}">listeners: {{gbsfm_listeners}}</p>
+  <p class="listenersthing">stream URLs<br> <a href="https://gbs.fm/96" target="_blank">96k</a> <a href="https://gbs.fm/128" target="_blank">128k</a> <a href="https://gbs.fm/192" target="_blank">192k</a> <a href="https://gbs.fm/256" target="_blank">256k</a> <a href="https://gbs.fm/320" target="_blank">320k</a> <a href="https://gbs.fm/flac" target="_blank">FLAC</a></p>
+  <p class="listenersthing">Winamp URLs<br> <a href="http://85.24.128.115:8000/96.m3u" target="_blank">96k</a> <a href="http://85.24.128.115:8000/128.m3u" target="_blank">128k</a> <a href="http://85.24.128.115:8000/192.m3u" target="_blank">192k</a> <a href="http://85.24.128.115:8000/256.m3u" target="_blank">256k</a> <a href="http://85.24.128.115:8000/320.m3u" target="_blank">320k</a> <a href="http://85.24.128.115:8000/flac.m3u" target="_blank">FLAC</a></p>
+
+</div>
+
+
+{% if messages %}
+  {% for message in messages %}
+    <p id="messages">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+<!-- {% if debug %}
+      <p id="messages"><em>Total query count:</em> {{ sqllog|length }}<br/>
+      <em>Total execution time:</em> {{ sqltime }}</p>
+      {% if show_queries %}
+      <div id="messages"><ul class="sqllog">
+          {% for sql in sqllog %}
+              <li>{{ sql.time }}: {{ sql.sql }}</li>
+          {% endfor %}
+      </ul></div>
+      {% endif %}
+      {% endif %}-->
+<div id="maincontainer">
+{% block main %}
+{% endblock %}
+</div>
+
+<!-- this is the end mark i was talking about, the one you'll find with asdf23 -->
+
+<div id="bottomcont">
+<div id="bottombg" title="geez what klutz designed this?"></div>
+
+      <div id="leftist">
+        <form action="#" method="post" id="commentform">
+          <input accesskey="c" autocomplete="off" id="commentbox" name="query" maxlength="400" type="text"
+                 value="You need to enable javascript to use the live comments system." disabled="disabled" />
+        </form>
+        <div id="commentsbox">
+          <a id="expandbutt" href="#" title="expand comment box"></a>
+          {% for comment in curr_comments %}
+            <p class="comment" title="{{comment.html_title}}">
+              @{{comment.time}} &lt;{{comment.commenter}}&gt; {{comment.body|safe}}
+            </p>
+          {% endfor %}
+        </div>
+      </div>
+      <div id="rightist">
+
+        <div id="progbarbox">
+          <div id="progtube">
+            <div style="width:{{song_progress}}%;" id="progbar"></div>
+          </div>
+          <span id="songPosition">{{song_position}}</span>/<span id="songLength">{{song_length}}</span>
+        </div>
+        <span><div id="metadata">{% include "linked_metadata.html" %}</div>
+        <div id="votebuttonslow">
+        vote:
+         {% num_range 1 6 as vote_range %}
+        {% for vote in vote_range %}
+          <a href="#" class="{% ifequal user_vote vote %}selectedvote{% endifequal %}" data-vote="{{vote}}">{{vote}}</a>
+        {% endfor %}
+        &nbsp;score: <span id='avgscore'>
+        {% if now_playing.avgscore %}
+          {{now_playing.avgscore|floatformat:accuracy}} ({{now_playing.voteno}} vote{{now_playing.voteno|pluralize}})
+        {% else %}
+          no votes
+        {% endif %}
+        </span>
+        </div></span>
+      </div>
+
+
+</div>
+</body>
+</html>
