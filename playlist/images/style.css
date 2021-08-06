@@ -401,12 +401,12 @@ div#votebuttonslow a {
   text-decoration:underline;
 }
 #carplay {
-  position:fixed;
-  /* right:50%; */
+  /* position:fixed;
+  right:50%;
   bottom:90%;
   width:60%;
   height:400px;
-  vertical-align:top;
+  vertical-align:top; */
   border:1px inset #666;
   border-radius:3px;
   -moz-border-radius:3px;
