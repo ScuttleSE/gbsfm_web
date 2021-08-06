@@ -208,15 +208,15 @@ function setScore(score) {
 }
 
 function setUserVote(score) {
-  $("#votebuttonslow > .selectedvote[data-vote!="+score+"]").removeClass("selectedvote");
-  $("#votebuttonslow > *[data-vote="+score+"]").addClass("selectedvote");
+  $("#carplayvotebuttonslow > .selectedvote[data-vote!="+score+"]").removeClass("selectedvote");
+  $("#carplayvotebuttonslow > *[data-vote="+score+"]").addClass("selectedvote");
   //update playlist if necessary
   $(".playing .votes a[data-vote!="+score+"]").removeClass("voted");
   $(".playing .votes a[data-vote="+score+"]").addClass("voted");
 }
 
 function setupVotes() {
-  $("#votebuttonslow > a").click(function () {
+  $("#carplayvotebuttonslow > a").click(function () {
     args = {};
     for (var i in ajax_args) {
       args[i] = ajax_args[i];
