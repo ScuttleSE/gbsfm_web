@@ -361,12 +361,12 @@ div#carplayvotebuttonslow a {
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   display:inline-block;
-  width:35px;
-  height:35px;
+  width:45px;
+  height:45px;
   background-color:#FFF;
   color:#000;
   text-align:center;
-  font-size:12px;
+  font-size:30px;
 }
 #commentbox {
   background-color:#FFF;
