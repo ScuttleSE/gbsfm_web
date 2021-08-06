@@ -346,6 +346,28 @@ div#votebuttonslow a {
   text-align:center;
   font-size:12px;
 }
+div#carplayvotebuttonslow {
+  display:block;
+  width:600px;
+  font-size:30px;
+  margin:5px 5px 2px 5px;
+  position:fixed;
+  bottom:4px;
+}
+div#carplayvotebuttonslow a {
+  text-decoration:none;
+  border:1px solid black;
+  border-radius:3px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  display:inline-block;
+  width:35px;
+  height:35px;
+  background-color:#FFF;
+  color:#000;
+  text-align:center;
+  font-size:12px;
+}
 #commentbox {
   background-color:#FFF;
   height:15px;
