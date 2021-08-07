@@ -117,13 +117,13 @@ def stop_stream3():
   Popen(["killall", "-KILL", "sc_serv"]).wait()
 
 def restart_linkbot():
-  Popen(["/home/gbsfm/restartstuff.sh", "botstack_socks-linkbot", "gitlab.hemma.lokal:5005/scuttle/socks-linkbot:latest"])
+  Popen(["/home/gbsfm/restartstuff.sh", "gbsfm_gbsfm_linkbot", "hub.hemma.lokal/images/gbsfm_linkbot:latest"])
 
 def restart_socks():
-  Popen(["/home/gbsfm/restartstuff.sh", "botstack_socks-docker", "gitlab.hemma.lokal:5005/scuttle/socks-docker:latest"])
+  Popen(["/home/gbsfm/restartstuff.sh", "gbsfm_socks-docker", "hub.hemma.lokal/images/gbsfm-ircbot:latest"])
 
 def restart_shoes():
-  Popen(["/home/gbsfm/restartstuff.sh", "botstack_shoes-docker", "gitlab.hemma.lokal:5005/scuttle/shoes-docker:latest"])
+  Popen(["/home/gbsfm/restartstuff.sh", "gbsfm_shoes-docker", "hub.hemma.lokal/images/gbsfm_discordbot:latest"])
 
 def getObj(table, name, oldid=None):
   #get album/artist object if it exists; otherwise create it
