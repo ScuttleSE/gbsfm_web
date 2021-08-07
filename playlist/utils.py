@@ -27,7 +27,9 @@ def getSong(song):
   return song.getPath()
 
 def restart_stream():
-  Popen(["curl", "-k", "-X", "POST", "-F", "token=ea11a2a357d69e0bec99b99e22969c", "-F", "ref=master", "https://gitlab.hemma.lokal/api/v4/projects/48/trigger/pipeline"], \
+  authstring = "Authorization: Bearer " + settings.DRONE_CI
+  print(authstring)
+  Popen(["curl", "-ik", "-X", "POST", "https://drone.hemma.lokal/api/repos/scuttle/gbsfm_streamrestart/builds", "-H", authstring], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_stream():
