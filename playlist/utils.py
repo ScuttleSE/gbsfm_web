@@ -53,7 +53,10 @@ def start_ftp():
   os.chdir(olddir)
 
 def restart_ftp():
-  Popen(["/home/gbsfm/restartjobs.sh", "gbsfm_ftprestart", ">/dev/null", "2>&1&"])
+  authstring = "Authorization: Bearer " + settings.DRONE_CI
+  print(authstring)
+  Popen(["curl", "-ik", "-X", "POST", "https://drone.hemma.lokal/api/repos/scuttle/gbsfm_ftprestart/builds", "-H", authstring], \
+  stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_stream2():
   Popen(["killall", "-KILL", "ices"]).wait()
