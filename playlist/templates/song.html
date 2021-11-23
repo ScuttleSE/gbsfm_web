@@ -14,8 +14,8 @@
 <img class="center" src = "images/down.png" style="float: right;">-->
 <div style="float: right; font-size: 24px; font-weight: bold; color: grey;">{{song.id}}</div>
 <table>
-<tr> 
-  <th class="song" colspan="2">Dong 
+<tr>
+  <th class="song" colspan="2">Dong
   </th>
 </tr>
 <tr>
@@ -80,7 +80,7 @@
 <input type="submit" value="Update" />
 </form>
 {% else %}
-  
+
   <tr>
     <td>Artist:</td>
     <td class="details"><a href='{% url 'artist' song.artist.id %}'>{{ song.artist }}</a></td>
@@ -115,6 +115,10 @@
   <tr>
     <td>Bitrate:</td>
     <td class="details">{{song.bitrate}}kbps</td>
+  </tr>
+  <tr>
+    <td>Format:</td>
+    <td class="details">{{song.format}}</td>
   </tr>
   <tr>
     <td>Date uploaded:</td>
@@ -160,7 +164,7 @@
       <a {% ifequal vote 4 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "4" %}">4</a>
       <a {% ifequal vote 5 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "5" %}">5</a>
     </td>
-  </tr>  
+  </tr>
   <tr>
     <td>Add to playlist:</td>
     <td>{% include "add.html" %}</td>
@@ -220,14 +224,14 @@
 {% for comment in comments %}
 <tr>
   <td>{{ comment.user.username }}</td>
-  
+
   <td>
   {% if comment.time %}
     {{comment.time|stom}}
   {% endif %}
   </td>
-  
-  
+
+
   <td>{{ comment.text|safe }}</td>
   <td>{{ comment.datetime|date:"D jS M Y \a\t g:i:s A" }}</td>
   <td>
@@ -240,4 +244,4 @@
 {% endfor %}
 </table>
 </div>
-{% endblock %} 
+{% endblock %}

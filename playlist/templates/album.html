@@ -1,9 +1,9 @@
 {% extends "master.html" %}
 
 {% block title %}{{album.name}} - GBS-FM{% endblock %}
-  
+
   {% load filters %}
-  
+
 {% block main %}
   <div class="playlist">
     <table width="620">
@@ -11,6 +11,8 @@
       <tr>
         <th>Artist</th>
         <th>Title</th>
+        <th>Format</th>
+        <th>Bitrate</th>
         <th>Length</th>
         <th>Add</th>
       </tr>
@@ -18,11 +20,13 @@
         <tr class="{% if forloop.counter|divisibleby:"2" %}even{% else %}odd{% endif %}">
           <td><a href="/artist/{{song.artist.id}}">{{song.artist.name}}</a></td>
           <td {% if song.banned %}class="banned"{% endif %}><a href="{% url 'song' song.id %}">{{ song.title }}</a></td>
+          <td class="emoticon">{{ song.format }}</td>
+          <td class="emoticon">{{ song.bitrate }}</td>
           <td>{{ song.length|stom }}</td>
           <td>{% include "add.html" %}</td>
         </tr>
       {% endfor %}
     </table>
   </div>
- 
-{% endblock %} 
+
+{% endblock %}
