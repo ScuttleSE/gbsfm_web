@@ -34,9 +34,9 @@ class UploadedFile:
     
     if self.type not in self.supported_types:
       if not self.type:
-        raise UnsupportedFormatError, "Could not detect filetype"
+        raise UnsupportedFormatError("Could not detect filetype")
       else:
-        raise UnsupportedFormatError, "%s not supported" % self.type
+        raise UnsupportedFormatError("%s not supported" % self.type)
     
     self.info = {}
     self.file = file

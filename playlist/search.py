@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from plex import *
+from Plex import *
 from django.db.models import Q
 from playlist.models import Song
-import StringIO
+import io
 
 class Search:
   
@@ -32,11 +32,10 @@ class Search:
     
     self.query = query
     
-  def _parseString(self, query=None):
+  def _parseString(self):
     """Return a parsed tuple list representing query"""
-    if query is None:
-      query = self.query
-    input = StringIO.StringIO()
+    query = self.query
+    input = io.StringIO()
     input.write(query)
     input.seek(0) #pretend query is a file
     s = Scanner(self.lexicon, input)
@@ -44,14 +43,17 @@ class Search:
     tuples = []
     while last[0]: #read up till final None
       if last[0] == "term":
-        last = self._parseTerm(last)
+        (term, fav) = last
+        last = self._parseTerm(term, fav)
       else:
         last = [last] #to make extend()) call work
       tuples.extend(last)
       last = s.read()
     return tuples
-  
-  def _parseTerm(self, (type, arg)):
+
+  # https://stackoverflow.com/questions/21892989/what-is-the-good-python3-equivalent-for-auto-tuple-unpacking-in-lambda
+  # def _parseTerm(self, (type, arg)):
+  def _parseTerm(self, type, arg):
     """Find modifiers (and actions) in a term tuple, and appropriately parses them
     
     Return tuple list suitable for extension onto parsing results"""
@@ -126,7 +128,7 @@ class Search:
     
 if __name__ == "__main__":
   s = Search("score > 5")
-  print s._makeQuery(s._parseString())
-  print s.getResults()
+  print(s._makeQuery(s._parseString()))
+  print(s.getResults())
 
   

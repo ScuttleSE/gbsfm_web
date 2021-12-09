@@ -3,7 +3,7 @@ import sys
 sys.path.append('/srv')
 sys.path.append('/srv/pydj')
 sys.path.append('/srv/pydj/apps')
-print sys.path
+print(sys.path)
 import os
 import os.path
 import threading

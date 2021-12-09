@@ -1,0 +1,9 @@
+# DO NOT CHECK THIS FILE INTO SOURCE CONTROL
+SA_USERNAME = 'username'
+SA_PASSWORD = 'password'
+SECRET_KEY = 'somerandomphrasethatissecret'
+NEXT_PASSWORD = 'password'
+DATABASE_USERNAME = 'username'
+DATABASE_PASSWORD = 'password'
+DATABASE_HOST = 'localhost'
+DRONE_CI = 'xxx'

@@ -17,14 +17,10 @@
     # at http://www.affero.org/oagpl.html.                                #
     #######################################################################
 
-import os
-import signal
-import itertools
-import datetime
 from random import getrandbits
 import random
 from hashlib import md5
-from urllib2 import URLError
+from urllib.error import URLError
 from subprocess import Popen
 from itertools import chain
 import logging
@@ -32,7 +28,7 @@ import json
 
 from django.http import *
 from django.template import Context, loader
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.serializers import serialize
 from django.contrib.auth.models import User,  UserManager, Group, Permission
 from django.shortcuts import render
@@ -60,7 +56,8 @@ from playlist.pllib import Playlist
 
 LIVE = settings.IS_LIVE
 
-if LIVE: from sa import SAProfile, IDNotFoundError
+if LIVE:
+    from playlist.sa import SAProfile, IDNotFoundError
 
 
 PIDFILE = settings.LOGIC_DIR+"/pid"
@@ -574,7 +571,7 @@ def api(request, resource=""):
 
     try:
       song.playlistAdd(user)
-    except AddError, e:
+    except AddError as e:
       return HttpResponseBadRequest(e.args[0])
 
     return HttpResponse(song.metadataString())
@@ -794,7 +791,7 @@ def song_report(request, songid):
       return HttpResponseRedirect(reverse('song', kwargs={'songid': songid}))
     else:
       for field in report_form:
-        print field.errors
+        print(field.errors)
   else:
     report_form = ReportForm()
 #  return render('song_report.html', {'form': report_form, 'song': song})
@@ -897,7 +894,7 @@ def download_song(request, songid):
   except UnicodeEncodeError:
     #don't bother working around, just use the hash
     response['Content-Disposition'] = 'attachment; filename="' + song.sha_hash + "." + song.format + '"'
-  print song.getPath()
+  print(song.getPath())
   return response
 
 @login_required()
@@ -1157,16 +1154,16 @@ def artist(request, artistid=None):
     artist = Artist.objects.get(id=artistid)
   except Artist.DoesNotExist:
     raise Http404
-  print artist
+  print(artist)
   songs = Song.objects.select_related("artist", "album").check_playable(request.user).filter(artist=artist).order_by("album__name", "track")
-  print songs
+  print(songs)
   return render(request, "artist.html", {'songs': songs, 'artist': artist})
 
 @permission_required('playlist.queue_song')
 def smart_add(request, category, user=None):
   if category == "unplayed":
     songs = Song.objects.annotate(entries_cnt=Count("entries")).filter(play_count=0, banned=False, entries_cnt=0)
-  print user
+  print(user)
   if user == "me":
     songs = songs.filter(uploader=request.user)
   elif user is not None:
@@ -1195,7 +1192,7 @@ def add(request, songid=None):
   oldtokens = profile.tokens
   try:
     song.playlistAdd(request.user)
-  except AddError, e:
+  except AddError as e:
     msg = "Error: %s" % (e.args[0])
     messages.add_message(request, messages.ERROR, msg)
     return HttpResponseRedirect(reverse("playlist"))

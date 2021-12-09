@@ -1,0 +1,28 @@
+version: '3.1'
+
+networks:
+  db_default:
+    external: true
+
+services:
+  djangotest:
+    domainname: "djangotest.127.0.0.1.xip.io"
+    volumes:
+      - ./:/srv/pydj
+      - ./weblog:/srv/logs
+    build: image/web
+    container_name: djangotest
+    networks:
+      - db_default
+
+  # to connect:
+  # ftp djangoftp.127.0.0.1.xip.io 2100
+  djangoftp:
+    domainname: "djangoftp.127.0.0.1.xip.io"
+    volumes:
+      - ./:/var/www
+      - ./ftplog:/srv/logs
+    build: image/ftp
+    container_name: djangoftp
+    networks:
+      - db_default

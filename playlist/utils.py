@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-import sha
-import socket
+import hashlib
 from subprocess import Popen
 import os
-import signal
-import urllib2
 import re
 
 from django.conf import settings
@@ -14,7 +11,7 @@ listeners =  re.compile(r'\<listeners\>(\d+)\</')
 
 def hashSong(file):
   """Returns sha5 hash of uploaded file. Assumes file is safely closed outside"""
-  sha_hash = sha.new("")
+  sha_hash = hashlib.new("")
   if file.multiple_chunks():
     for chunk in file.chunks():
       sha_hash.update(chunk)
