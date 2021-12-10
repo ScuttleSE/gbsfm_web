@@ -426,7 +426,7 @@ $(document).ready(function(){
         vote:
          {% num_range 1 6 as vote_range %}
         {% for vote in vote_range %}
-          <a href="#" class="{% ifequal user_vote vote %}selectedvote{% endifequal %}" data-vote="{{vote}}">{{vote}}</a>
+          <a href="#" class="{% if user_vote == vote %}selectedvote{% endif %}" data-vote="{{vote}}">{{vote}}</a>
         {% endfor %}
         <br>&nbsp;score: <span id='avgscore'>
         {% if now_playing.avgscore %}
