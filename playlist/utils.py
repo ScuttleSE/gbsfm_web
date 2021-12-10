@@ -6,6 +6,11 @@ import re
 
 from django.conf import settings
 
+#todo move to settings
+HOME_DIR = '/srv/pydj'
+GBSFM_DIR = '/home/gbsfm'
+#GBSFM_DIR = '/home/joop/sites/gbsfm/gbsfm_web'
+
 listeners =  re.compile(r'\<listeners\>(\d+)\</')
 #listeners =  re.compile(r'\<CURRENTLISTENERS\>(\d+)\</')
 
@@ -42,12 +47,12 @@ def stop_stream():
   Popen(["killall", "-KILL", "ices"]).wait()
 
 def stop_ftp():
-  Popen(["/srv/pydj/doc/killftp.sh"]).wait()
+  Popen([HOME_DIR + "/doc/killftp.sh"]).wait()
 
 def start_ftp():
-  Popen(["/srv/pydj/doc/killftp.sh"]).wait()
+  Popen([HOME_DIR + "/doc/killftp.sh"]).wait()
   olddir = os.curdir
-  os.chdir('/srv/pydj/')
+  os.chdir(HOME_DIR + '/')
   Popen(["python", "manage.py", "ftp"]).wait()
   os.chdir(olddir)
 
@@ -76,7 +81,7 @@ def stop_stream2():
 def start_metadataupdater():
   Popen(["killall", "-r", "metadataupdater.sh"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
-  Popen(["nohup", "/home/gbsfm/metadataupdater.sh", ">/dev/null", "2>&1&"], \
+  Popen(["nohup", GBSFM_DIR + "/metadataupdater.sh", ">/dev/null", "2>&1&"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def stop_metadataupdater():
@@ -86,13 +91,13 @@ def stop_metadataupdater():
 def start_listeners():
   Popen(["killall", "-r", "listeners.sh"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
-  Popen(["nohup", "/home/gbsfm/listeners.sh", ">/dev/null", "2>&1&"], \
+  Popen(["nohup", GBSFM_DIR + "/listeners.sh", ">/dev/null", "2>&1&"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_remaining():
   Popen(["killall", "-r", "remaining.py"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
-  Popen(["nohup", "/home/gbsfm/remaining.py", ">/dev/null", "2>&1&"], \
+  Popen(["nohup", GBSFM_DIR + "/remaining.py", ">/dev/null", "2>&1&"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_stream3():
@@ -116,13 +121,13 @@ def stop_stream3():
   Popen(["killall", "-KILL", "sc_serv"]).wait()
 
 def restart_linkbot():
-  Popen(["/home/gbsfm/restartstuff.sh", "gbsfm_gbsfm_linkbot", "hub.hemma.lokal/images/gbsfm_linkbot:latest"])
+  Popen([GBSFM_DIR + "/restartstuff.sh", "gbsfm_gbsfm_linkbot", "hub.hemma.lokal/images/gbsfm_linkbot:latest"])
 
 def restart_socks():
-  Popen(["/home/gbsfm/restartstuff.sh", "gbsfm_socks-docker", "hub.hemma.lokal/images/gbsfm-ircbot:latest"])
+  Popen([GBSFM_DIR + "/restartstuff.sh", "gbsfm_socks-docker", "hub.hemma.lokal/images/gbsfm-ircbot:latest"])
 
 def restart_shoes():
-  Popen(["/home/gbsfm/restartstuff.sh", "gbsfm_shoes-docker", "hub.hemma.lokal/images/gbsfm_discordbot:latest"])
+  Popen([GBSFM_DIR + "/restartstuff.sh", "gbsfm_shoes-docker", "hub.hemma.lokal/images/gbsfm_discordbot:latest"])
 
 def getObj(table, name, oldid=None):
   #get album/artist object if it exists; otherwise create it
@@ -151,7 +156,7 @@ def getObj(table, name, oldid=None):
 #    return "?"
 
 def listenerCount(url):
-  with open('/home/gbsfm/listeners.txt', 'r') as listenerfile:
+  with open(GBSFM_DIR + '/listeners.txt', 'r') as listenerfile:
     listeners = listenerfile.read()
   listenerfile.close()
   return listeners

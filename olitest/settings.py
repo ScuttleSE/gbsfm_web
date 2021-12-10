@@ -62,9 +62,18 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'playlist.context.SQLLogContextProcessor',
+                'playlist.context.listenersContextProcessor',
+                'playlist.context.positionContextProcessor',
+                'playlist.context.commentProcessor',
+                "playlist.context.nowPlayingContextProcessor",
+                "playlist.context.newEditsContextProcessor",
+                "playlist.context.newReportsContextProcessor",
+                "django.contrib.messages.context_processors.messages"
             ],
         },
     },
