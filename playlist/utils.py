@@ -158,3 +158,20 @@ def listenerCount(url):
 
 def gbsfmListenerCount():
   return listenerCount(settings.STREAMINFO_URL)
+
+
+def try_read(file):
+    content = False
+    try:
+        f = open(file, 'r', encoding='utf-8')
+        content = f.read()
+    except UnicodeDecodeError:
+        pass
+
+    # try again with different encoding
+    if not content:
+        f = open(file, 'r', encoding='iso-8859-1')
+        content = f.read()
+
+    f.close()
+    return content.encode('utf-8')

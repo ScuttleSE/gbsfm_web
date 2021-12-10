@@ -10,6 +10,7 @@ from mutagen.oggopus import OggOpus
 from mutagen.easymp4 import EasyMP4
 from mutagen.mp3 import HeaderNotFoundError
 import hashlib
+from playlist.utils import try_read
 
 from playlist.models import *
 from django.contrib.auth.models import User
@@ -43,13 +44,11 @@ class UploadedFile:
     self.getHash()
     self.getTags()
     
-    
-    
   def getHash(self):
     """Populates self.sha_hash with sha1 hash of uploaded file."""
-    f = open(self.file)
-    self.info['sha_hash'] = hashlib.sha1(f.read()).hexdigest()
-    f.close()
+    content = try_read(self.file)
+    self.info['sha_hash'] = hashlib.sha1(content).hexdigest()
+
     
   def store(self):
     """Store song in a usable directory using SongDir

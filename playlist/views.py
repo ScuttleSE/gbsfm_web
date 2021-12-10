@@ -675,7 +675,8 @@ def keygen(request):
   """Generates an API key which can be used instead of a password for API calls but not for important things like deletes. Checks for dupes."""
   while True:
     #keep generating keys until we get a unique one
-    newquay = lambda: md5(settings.SECRET_KEY + str(getrandbits(64)) + request.user.username).hexdigest()
+    to_hash = settings.SECRET_KEY + str(getrandbits(64)) + request.user.username
+    newquay = lambda: md5(to_hash.encode('utf-8')).hexdigest()
     key = newquay()
     try:
       UserProfile.objects.get(api_key=key)
@@ -1019,7 +1020,7 @@ def user(request, userid):
   useradds = OldPlaylistEntry.objects.select_related().filter(adder__id=owner.id).count() + curuseradds
 
   # average score for uploaded dongs
-  uploadavg = Song.objects.select_related().filter(uploader=owner.id).exclude(voteno=0).aggregate(Avg('avgscore')).values()[0]
+  uploadavg = list(Song.objects.select_related().filter(uploader=owner.id).exclude(voteno=0).aggregate(Avg('avgscore')).values())[0]
 
   # number of comments written
   numcomments = Comment.objects.select_related().filter(user__id=owner.id).count()

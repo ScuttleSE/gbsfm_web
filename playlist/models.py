@@ -14,7 +14,7 @@ from django.conf import settings
 from django.db.models.signals import pre_save
 from django.db.models import Avg, Count, Sum
 from django.db.models.query import QuerySet
-from playlist.utils import getObj
+from playlist.utils import getObj, try_read
 from playlist.cue import CueFile
 from django.template.defaultfilters import safe, force_escape
 
@@ -634,7 +634,7 @@ class SongDir(models.Model):
     temp_file = open(temp_path)
 
     try:
-      new_file.write(temp_file.read())
+      new_file.write(try_read(temp_file.read()))
     finally:
       temp_file.close() #temp file so no need to delete
       new_file.close()
