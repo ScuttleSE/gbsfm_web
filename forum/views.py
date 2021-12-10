@@ -6,15 +6,12 @@ and posts, adding new threads, and adding replies.
 
 from datetime import datetime as dt
 from django.shortcuts import get_object_or_404, render
-from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError, HttpResponseForbidden, HttpResponseNotAllowed
-from django.template import RequestContext, loader
-from django import forms
+from django.http import Http404, HttpResponseRedirect, HttpResponseServerError, HttpResponseForbidden
+from django.template import loader
 from django.core.mail import EmailMessage
-from django.conf import settings
 from django.template.defaultfilters import striptags, wordwrap
 from django.contrib.sites.models import Site
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.urls import reverse
 from django.views.generic.list import ListView
 
 from forum.models import *
@@ -65,9 +62,9 @@ class ThreadListView(ListView):
         try:
             t = Thread.objects.select_related().get(pk=thread)
             if not Forum.objects.has_access(t.forum, self.request.user.groups.all()):
-                raise Http404, "insufficient permissions"
+                raise Http404("insufficient permissions")
         except Thread.DoesNotExist:
-            raise Http404, "thread does not exist"
+            raise Http404("thread does not exist")
 
 
 

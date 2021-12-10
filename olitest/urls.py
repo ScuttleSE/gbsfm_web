@@ -26,7 +26,7 @@ defaultdict = { 'groupName': 'example' }
 
 urlpatterns = [
 
-#re_path(r'^forum/', include('forum.urls')),
+re_path(r'^forum/', include('forum.urls')),
 re_path(r'^admin/', admin.site.urls),
 re_path(r'^$', playlist.views.playlist),
 re_path(r'^playlist(/(?P<lastid>\d+))?$', playlist.views.playlist, {}, name="playlist"),
