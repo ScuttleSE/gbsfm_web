@@ -10,14 +10,13 @@ from django.db import models
 import datetime
 from django.contrib.auth.models import User, Group
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from forum.managers import ForumManager
 
 FORUM_PAGINATION = getattr(settings, 'FORUM_PAGINATION', 10)
 
 class Category(models.Model):
-  
   name = models.CharField(max_length=100, editable=True)
   sort_order = models.IntegerField(default=0, editable=True)
   
@@ -37,11 +36,11 @@ class Forum(models.Model):
     groups = models.ManyToManyField(Group, blank=True)
     title = models.CharField(_("Title"), max_length=100)
     slug = models.SlugField(_("Slug"))
-    parent = models.ForeignKey('self', blank=True, null=True, related_name='child')
+    parent = models.ForeignKey('self', blank=True, null=True, related_name='child', on_delete=models.CASCADE)
     description = models.TextField(_("Description"))
     threads = models.IntegerField(_("Threads"), default=0, editable=False)
     posts = models.IntegerField(_("Posts"), default=0, editable=False)
-    category = models.ForeignKey(Category, related_name="forums")
+    category = models.ForeignKey(Category, related_name="forums", on_delete=models.CASCADE)
     anonymous = models.BooleanField()
     sort_order = models.IntegerField(default=0)
 
@@ -165,7 +164,7 @@ class Thread(models.Model):
     in the thread listings. Again, the posts & views fields are 
     automatically updated with saving a post or viewing the thread.
     """
-    forum = models.ForeignKey(Forum)
+    forum = models.ForeignKey(Forum, on_delete=models.CASCADE)
     title = models.CharField(_("Title"), max_length=100)
     sticky = models.BooleanField(_("Sticky?"), blank=True, default=False)
     closed = models.BooleanField(_("Closed?"), blank=True, default=False)
@@ -210,7 +209,8 @@ class Thread(models.Model):
     
     def get_absolute_url(self):
         return ('forum_view_thread', [str(self.id)])
-    get_absolute_url = models.permalink(get_absolute_url)
+
+    #get_absolute_url = models.permalink(get_absolute_url)
     
     def __unicode__(self):
         return u'%s' % self.title    
@@ -220,8 +220,8 @@ class Post(models.Model):
     A Post is a User's input to a thread. Uber-basic - the save() 
     method also updates models further up the heirarchy (Thread,Forum)
     """
-    thread = models.ForeignKey(Thread)
-    author = models.ForeignKey(User, related_name='forum_post_set')
+    thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, related_name='forum_post_set', on_delete=models.CASCADE)
     body = models.TextField(_("Body"))
     time = models.DateTimeField(_("Time"), blank=True, null=True)
 
@@ -284,8 +284,8 @@ class Subscription(models.Model):
     """
     Allow users to subscribe to threads.
     """
-    author = models.ForeignKey(User)
-    thread = models.ForeignKey(Thread)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (("author", "thread"),)
@@ -299,9 +299,9 @@ class LastRead(models.Model):
   """
   Stores a particular user's last read post for a particular thread.
   """
-  user = models.ForeignKey(User)
-  post = models.ForeignKey(Post)
-  thread = models.ForeignKey(Thread)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  post = models.ForeignKey(Post, on_delete=models.CASCADE)
+  thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
   
   class Meta:
     unique_together = (("user", "thread"),)
