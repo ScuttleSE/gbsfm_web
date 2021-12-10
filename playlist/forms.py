@@ -33,11 +33,11 @@ class SongIDField(forms.CharField):
     try:
       value = int(value)
     except ValueError:
-      raise forms.ValidationError, "The duplicate ID must be numeric"
+      raise forms.ValidationError("The duplicate ID must be numeric")
     try:
       song = Song.objects.get(id=value)
     except Song.DoesNotExist:
-      raise forms.ValidationError, "The given duplicate ID is invalid!"
+      raise forms.ValidationError("The given duplicate ID is invalid!")
     return song
   
   def clean(self, value):
@@ -48,11 +48,11 @@ class SongIDField(forms.CharField):
     try:
       value = int(value)
     except ValueError:
-      raise forms.ValidationError, "The duplicate ID must be numeric"
+      raise forms.ValidationError("The duplicate ID must be numeric")
     try:
       song = Song.objects.get(id=value)
     except Song.DoesNotExist:
-      raise forms.ValidationError, "The given duplicate ID is invalid!"
+      raise forms.ValidationError("The given duplicate ID is invalid!")
     
     return song
   
@@ -66,7 +66,7 @@ class SearchForm(forms.Form):
   
   def clean_query(self):
     if len(self.cleaned_data['query']) < 3:
-      raise forms.ValidationError, "Query should be 3 characters long or more."
+      raise forms.ValidationError("Query should be 3 characters long or more.")
     return self.cleaned_data['query']
   
 class SongForm(forms.ModelForm):
@@ -125,16 +125,16 @@ class NewRegisterForm(forms.Form):
       
   def clean(self):
     if self.cleaned_data['password1'] != self.cleaned_data['password2']:
-      raise forms.ValidationError, "Passwords must match"
+      raise forms.ValidationError("Passwords must match")
     if len(self.cleaned_data['password1']) < 4:
-      raise forms.ValidationError, "Password too short: must be at least 4 characters"
+      raise forms.ValidationError("Password too short: must be at least 4 characters")
     
     return self.cleaned_data
   
   def clean_saname(self):
     try:
       User.objects.get(username=self.cleaned_data['saname'])
-      raise forms.ValidationError, "Username already registered. If you're not happy about this, PM Jonnty."
+      raise forms.ValidationError("Username already registered. If you're not happy about this, PM Jonnty.")
     except User.DoesNotExist:
       return self.cleaned_data['saname'] 
       

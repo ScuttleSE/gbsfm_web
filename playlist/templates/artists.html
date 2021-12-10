@@ -8,33 +8,33 @@
   <div class="artists">
   <div class="page-links">
   <ol class="alphabetical">
-      <li {% ifequal letter "123" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "123" "1" %}">#</a></li>
-      <li {% ifequal letter "a" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "A" "1" %}">A</a></li>
-      <li {% ifequal letter "b" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "B" "1" %}">B</a></li>
-      <li {% ifequal letter "c" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "C" "1" %}">C</a></li>
-      <li {% ifequal letter "d" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "D" "1" %}">D</a></li>
-      <li {% ifequal letter "e" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "E" "1" %}">E</a></li>
-      <li {% ifequal letter "f" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "F" "1" %}">F</a></li>
-      <li {% ifequal letter "g" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "G" "1" %}">G</a></li>
-      <li {% ifequal letter "h" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "H" "1" %}">H</a></li>
-      <li {% ifequal letter "i" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "I" "1" %}">I</a></li>
-      <li {% ifequal letter "j" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "J" "1" %}">J</a></li>
-      <li {% ifequal letter "k" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "K" "1" %}">K</a></li>
-      <li {% ifequal letter "l" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "L" "1" %}">L</a></li>
-      <li {% ifequal letter "m" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "M" "1" %}">M</a></li>
-      <li {% ifequal letter "n" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "N" "1" %}">N</a></li>
-      <li {% ifequal letter "o" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "O" "1" %}">O</a></li>
-      <li {% ifequal letter "p" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "P" "1" %}">P</a></li>
-      <li {% ifequal letter "q" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "Q" "1" %}">Q</a></li>
-      <li {% ifequal letter "r" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "R" "1" %}">R</a></li>
-      <li {% ifequal letter "s" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "S" "1" %}">S</a></li>
-      <li {% ifequal letter "t" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "T" "1" %}">T</a></li>
-      <li {% ifequal letter "u" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "U" "1" %}">U</a></li>
-      <li {% ifequal letter "v" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "V" "1" %}">V</a></li>
-      <li {% ifequal letter "w" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "W" "1" %}">W</a></li>
-      <li {% ifequal letter "x" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "X" "1" %}">X</a></li>
-      <li {% ifequal letter "y" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "Y" "1" %}">Y</a></li>
-      <li {% ifequal letter "z" %}class="chosen"{% endifequal %}><a href="{% url 'listartists' "Z" "1" %}">Z</a></li>
+      <li {% if letter == "123" %}class="chosen"{% endif %}><a href="{% url 'listartists' "123" "1" %}">#</a></li>
+      <li {% if letter == "a" %}class="chosen"{% endif %}><a href="{% url 'listartists' "A" "1" %}">A</a></li>
+      <li {% if letter == "b" %}class="chosen"{% endif %}><a href="{% url 'listartists' "B" "1" %}">B</a></li>
+      <li {% if letter == "c" %}class="chosen"{% endif %}><a href="{% url 'listartists' "C" "1" %}">C</a></li>
+      <li {% if letter == "d" %}class="chosen"{% endif %}><a href="{% url 'listartists' "D" "1" %}">D</a></li>
+      <li {% if letter == "e" %}class="chosen"{% endif %}><a href="{% url 'listartists' "E" "1" %}">E</a></li>
+      <li {% if letter == "f" %}class="chosen"{% endif %}><a href="{% url 'listartists' "F" "1" %}">F</a></li>
+      <li {% if letter == "g" %}class="chosen"{% endif %}><a href="{% url 'listartists' "G" "1" %}">G</a></li>
+      <li {% if letter == "h" %}class="chosen"{% endif %}><a href="{% url 'listartists' "H" "1" %}">H</a></li>
+      <li {% if letter == "i" %}class="chosen"{% endif %}><a href="{% url 'listartists' "I" "1" %}">I</a></li>
+      <li {% if letter == "j" %}class="chosen"{% endif %}><a href="{% url 'listartists' "J" "1" %}">J</a></li>
+      <li {% if letter == "k" %}class="chosen"{% endif %}><a href="{% url 'listartists' "K" "1" %}">K</a></li>
+      <li {% if letter == "l" %}class="chosen"{% endif %}><a href="{% url 'listartists' "L" "1" %}">L</a></li>
+      <li {% if letter == "m" %}class="chosen"{% endif %}><a href="{% url 'listartists' "M" "1" %}">M</a></li>
+      <li {% if letter == "n" %}class="chosen"{% endif %}><a href="{% url 'listartists' "N" "1" %}">N</a></li>
+      <li {% if letter == "o" %}class="chosen"{% endif %}><a href="{% url 'listartists' "O" "1" %}">O</a></li>
+      <li {% if letter == "p" %}class="chosen"{% endif %}><a href="{% url 'listartists' "P" "1" %}">P</a></li>
+      <li {% if letter == "q" %}class="chosen"{% endif %}><a href="{% url 'listartists' "Q" "1" %}">Q</a></li>
+      <li {% if letter == "r" %}class="chosen"{% endif %}><a href="{% url 'listartists' "R" "1" %}">R</a></li>
+      <li {% if letter == "s" %}class="chosen"{% endif %}><a href="{% url 'listartists' "S" "1" %}">S</a></li>
+      <li {% if letter == "t" %}class="chosen"{% endif %}><a href="{% url 'listartists' "T" "1" %}">T</a></li>
+      <li {% if letter == "u" %}class="chosen"{% endif %}><a href="{% url 'listartists' "U" "1" %}">U</a></li>
+      <li {% if letter == "v" %}class="chosen"{% endif %}><a href="{% url 'listartists' "V" "1" %}">V</a></li>
+      <li {% if letter == "w" %}class="chosen"{% endif %}><a href="{% url 'listartists' "W" "1" %}">W</a></li>
+      <li {% if letter == "x" %}class="chosen"{% endif %}><a href="{% url 'listartists' "X" "1" %}">X</a></li>
+      <li {% if letter == "y" %}class="chosen"{% endif %}><a href="{% url 'listartists' "Y" "1" %}">Y</a></li>
+      <li {% if letter == "z" %}class="chosen"{% endif %}><a href="{% url 'listartists' "Z" "1" %}">Z</a></li>
     </ol>
     {% if artists.has_previous %}
       <a href="{% url 'listartists' letter artists.previous_page_number %}">previous</a>

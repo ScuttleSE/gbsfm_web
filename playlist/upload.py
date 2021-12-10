@@ -10,6 +10,7 @@ from mutagen.oggopus import OggOpus
 from mutagen.easymp4 import EasyMP4
 from mutagen.mp3 import HeaderNotFoundError
 import hashlib
+from playlist.utils import try_read
 
 from playlist.models import *
 from django.contrib.auth.models import User
@@ -34,22 +35,20 @@ class UploadedFile:
     
     if self.type not in self.supported_types:
       if not self.type:
-        raise UnsupportedFormatError, "Could not detect filetype"
+        raise UnsupportedFormatError("Could not detect filetype")
       else:
-        raise UnsupportedFormatError, "%s not supported" % self.type
+        raise UnsupportedFormatError("%s not supported" % self.type)
     
     self.info = {}
     self.file = file
     self.getHash()
     self.getTags()
     
-    
-    
   def getHash(self):
     """Populates self.sha_hash with sha1 hash of uploaded file."""
-    f = open(self.file)
-    self.info['sha_hash'] = hashlib.sha1(f.read()).hexdigest()
-    f.close()
+    content = try_read(self.file)
+    self.info['sha_hash'] = hashlib.sha1(content).hexdigest()
+
     
   def store(self):
     """Store song in a usable directory using SongDir

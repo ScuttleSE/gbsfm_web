@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 from django import template
 from django.conf import settings
-from django.utils.encoding import smart_str, force_unicode
+from django.utils.encoding import force_str
 from django.utils.safestring import mark_safe
-
-register = template.Library()
 
 register = template.Library()
 
@@ -43,10 +41,12 @@ def bbcode(value):
         from postmarkup import render_bbcode
     except ImportError:
         if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't installed."
-        return force_unicode(value)
+            raise template.TemplateSyntaxError("Error in {% bbcode %} filter: The Python postmarkup library isn't installed.")
+        return force_str(value)
     else:
         return mark_safe(render_bbcode(value))
+
+
 bbcode.is_save = True
 
 @register.filter
@@ -61,11 +61,14 @@ def strip_bbcode(value):
         from postmarkup import strip_bbcode
     except ImportError:
         if settings.DEBUG:
-            raise template.TemplateSyntaxError, "Error in {% bbcode %} filter: The Python postmarkup library isn't installed."
-        return force_unicode(value)
+            raise template.TemplateSyntaxError("Error in {% bbcode %} filter: The Python postmarkup library isn't installed.")
+        return force_str(value)
     else:
         return mark_safe(strip_bbcode(value))
+
+
 strip_bbcode.is_save = True
+
 
 class RangeNode(template.Node):
     def __init__(self, start, stop, step, context_name):

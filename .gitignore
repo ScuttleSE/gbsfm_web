@@ -1,3 +1,4 @@
+.idea
 *.pyc
 playlist/logic/ices.log
 playlist/logic/pid

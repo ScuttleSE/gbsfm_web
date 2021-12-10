@@ -350,7 +350,6 @@ $(document).ready(function(){
     <li><a href="{% url 'listartists' "all" "1" %}" class="boxed">&nbsp;artists</a></li>
     <li><a href="{% url 'user' user.id %}" class="boxed">&nbsp;user page</a></li>
     <li><a href="{% url 'user_settings' %}" class="boxed">&nbsp;settings</a></li>
-    <li><a href="{% url 'forum_index' %}" class="boxed">&nbsp;forums</a></li>
     <li><a href="https://discord.gg/5rsyDSj" class="boxed">&nbsp;live chat!</a></li>
     <li><a href="{% url 'logout' %}" class="boxed">&nbsp;logout</a></li>
     {% if perms.playlist.view_edits %}
@@ -427,7 +426,7 @@ $(document).ready(function(){
         vote:
          {% num_range 1 6 as vote_range %}
         {% for vote in vote_range %}
-          <a href="#" class="{% ifequal user_vote vote %}selectedvote{% endifequal %}" data-vote="{{vote}}">{{vote}}</a>
+          <a href="#" class="{% if user_vote == vote %}selectedvote{% endif %}" data-vote="{{vote}}">{{vote}}</a>
         {% endfor %}
         <br>&nbsp;score: <span id='avgscore'>
         {% if now_playing.avgscore %}

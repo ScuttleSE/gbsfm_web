@@ -50,7 +50,7 @@ class SAProfile:
 
 if __name__ == "__main__":
   p = SAProfile("Scuttle_SE")
-  print p.get_id()
-  print p.has_authcode("farts")
+  print(p.get_id())
+  print(p.has_authcode("farts"))
 
 

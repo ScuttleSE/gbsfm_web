@@ -3,24 +3,18 @@
 
 from django.db import models
 from playlist import utils
-from subprocess import Popen
 import datetime
-import shutil
 import os
 import errno
-from os.path import basename
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 from django.contrib.auth.models import User
-from django.db import IntegrityError 
+
 from django.conf import settings
 from django.db.models.signals import pre_save
 from django.db.models import Avg, Count, Sum
 from django.db.models.query import QuerySet
-from django.core.urlresolvers import reverse
-
-
-from playlist.utils import getObj
+from playlist.utils import getObj, try_read
 from playlist.cue import CueFile
 from django.template.defaultfilters import safe, force_escape
 
@@ -36,19 +30,20 @@ class CommentTooLongError(Exception): pass
 class StorageError(Exception): pass
 
 
-
-
 class Artist(models.Model):
   name = models.CharField(max_length=255, unique=True)
   sort_name = models.CharField(max_length=300)
-  
-  def __unicode__(self): return self.name
+
+  def __str__(self):
+    return str(self.name)
+
   #maybe url, statistics?
   
-  class Meta:
-    permissions = (
-    ("view_artist",  "g2 Can view artist pages."), 
-    )
+  #playlist.Artist: (auth.E005) The permission codenamed 'view_artist' clashes with a builtin permission for model 'playlist.Artist'.
+  # class Meta:
+  #   permissions = (
+  #   ("view_artist",  "g2 Can view artist pages."),
+  #   )
   #def save(self):
     ##clean up name and change sort_name
     #self.name = self.name.strip()
@@ -83,15 +78,16 @@ pre_save.connect(artist_handler, sender=Artist)
 
 class Album(models.Model):
   name = models.CharField(max_length=255, unique=True)
-  
-  def __unicode__(self): return self.name
+  def __str__(self):
+    return str(self.name)
 
 class Rating(models.Model):
   score = models.FloatField()
-  user = models.ForeignKey(User, related_name='ratings')
-  song = models.ForeignKey('Song', related_name='ratings')
+  user = models.ForeignKey(User, related_name='ratings', on_delete=models.CASCADE)
+  song = models.ForeignKey('Song', related_name='ratings', on_delete=models.CASCADE)
   
-  def __unicode__(self): return unicode(self.score)
+  def __str__(self):
+    return str(self.score)
 
   class Meta:
     unique_together = ('user', 'song')
@@ -100,13 +96,13 @@ class Rating(models.Model):
     )
 
 class UserProfile(models.Model):
-  user = models.OneToOneField(User,  unique=True)
+  user = models.OneToOneField(User,  unique=True, on_delete=models.CASCADE)
   uploads = models.IntegerField(default=0)
   #last_ip = models.CharField(max_length=15)
   api_key = models.CharField(max_length=40, editable=False, blank=True)
   sa_id = models.IntegerField(blank=True, null=True, unique=True,
                               help_text="Something Awful account ID") 
-  favourites = models.ManyToManyField("Song", related_name="lovers")
+  favourites = models.ManyToManyField("Song", related_name="lovers", blank=True)
   tokens = models.IntegerField(default=0)
   
   #settings
@@ -121,9 +117,10 @@ class UserProfile(models.Model):
       return #do nothing while cackling quietly
     try:
       Song.objects.get(sha_hash=upload.info['sha_hash'])
-    except Song.DoesNotExist: pass
+    except Song.DoesNotExist:
+      pass
     else:
-      raise DuplicateError, "song already in database"
+      raise DuplicateError("song already in database")
     
     if os.path.getsize(upload.file) > settings.MAX_UPLOAD_SIZE:
       raise FileTooBigError
@@ -247,25 +244,25 @@ class SongManager(models.Manager):
     
 class EditNote(models.Model):
   """Note which mods can add to SongEdits to explain their actions or (more likely) make poor jokes"""
-  author = models.ForeignKey(User, related_name="edit_notes")
-  edit = models.ForeignKey("SongEdit", related_name="notes")
+  author = models.ForeignKey(User, related_name="edit_notes", on_delete=models.CASCADE)
+  edit = models.ForeignKey("SongEdit", related_name="notes", on_delete=models.CASCADE)
   note = models.CharField(max_length=300)
   
 class FieldEdit(models.Model):
   """Represents an edit to a single field"""
   new_value = models.CharField(max_length=300, blank=False) 
   field = models.CharField(max_length=50, blank=False)
-  song_edit = models.ForeignKey("SongEdit", related_name="field_edits")
+  song_edit = models.ForeignKey("SongEdit", related_name="field_edits", on_delete=models.CASCADE)
 
 class SongEdit(models.Model):
   """Represents an edit to a song made by an unprivilidged user which needs mod approval"""
-  requester = models.ForeignKey(User, related_name="requested_edits")
+  requester = models.ForeignKey(User, related_name="requested_edits", on_delete=models.CASCADE)
   applied = models.BooleanField(default=False)
   denied = models.BooleanField(default=False)
-  actioned_by = models.ForeignKey(User, related_name="actioned_edits", null=True, blank=True)
+  actioned_by = models.ForeignKey(User, related_name="actioned_edits", null=True, blank=True, on_delete=models.CASCADE)
   created_at = models.DateTimeField()
   actioned_at = models.DateTimeField(null=True, default=None)
-  song = models.ForeignKey("Song", related_name="requested_edits")
+  song = models.ForeignKey("Song", related_name="requested_edits", on_delete=models.CASCADE)
   
   def deny(self, denier):
     if not self.denied or self.applied:
@@ -306,19 +303,19 @@ class SongEdit(models.Model):
     )
     
 class SongReport(models.Model):
-  song = models.ForeignKey("Song", related_name="reports", editable=False, null=True)
-  reporter = models.ForeignKey(User, related_name="song_reports", editable=False)
+  song = models.ForeignKey("Song", related_name="reports", editable=False, null=True, on_delete=models.CASCADE)
+  reporter = models.ForeignKey(User, related_name="song_reports", editable=False, on_delete=models.CASCADE)
   #reasons
   corrupt = models.BooleanField(default=False)
   not_music = models.BooleanField(default=False)
   other = models.BooleanField(default=False)
-  duplicate = models.ForeignKey("Song", null=True)
+  duplicate = models.ForeignKey("Song", null=True, on_delete=models.CASCADE)
   
   user_note = models.CharField(max_length=300, blank=True)
   
   created_at = models.DateTimeField()
   actioned_at = models.DateTimeField(null=True)
-  actioned_by = models.ForeignKey(User, related_name="actioned_song_reports", null=True)
+  actioned_by = models.ForeignKey(User, related_name="actioned_song_reports", null=True, on_delete=models.CASCADE)
   approved = models.BooleanField(default=False)
   denied = models.BooleanField(default=False)
   
@@ -372,8 +369,8 @@ class Song(models.Model):
   """Represents a song, containing all tags and other metadata"""
     #TODO: sort out artist/composer/lyricist/remixer stuff as per note
   title = models.CharField(max_length=300)
-  artist = models.ForeignKey(Artist, blank=True, related_name='songs')
-  album = models.ForeignKey(Album, blank=True, related_name='songs')
+  artist = models.ForeignKey(Artist, blank=True, related_name='songs', on_delete=models.CASCADE)
+  album = models.ForeignKey(Album, blank=True, related_name='songs', on_delete=models.CASCADE)
   composer = models.CharField(max_length=300, blank=True) #balthcat <3
   lyricist = models.CharField(max_length=300, blank=True)
   remixer = models.CharField(max_length=300, blank=True) #balthcat <3
@@ -384,14 +381,14 @@ class Song(models.Model):
   sha_hash = models.CharField(max_length=40, unique=True, editable=False)
   add_date = models.DateTimeField(editable=False)
   format = models.CharField(max_length=5, editable=False)
-  uploader = models.ForeignKey(User, editable=False, related_name="uploads")
+  uploader = models.ForeignKey(User, editable=False, related_name="uploads", on_delete=models.CASCADE)
   category = models.CharField(max_length=20, default="regular", editable=False)
   
   banned = models.BooleanField(default=False, editable=False)
   banreason = models.CharField(max_length=100, blank=True, editable=False)
   unban_adds = models.IntegerField(default=0, editable=False) #number of plays till rebanned: 0 is forever
   
-  location = models.ForeignKey("SongDir", null=True, editable=False)
+  location = models.ForeignKey("SongDir", null=True, editable=False, on_delete=models.CASCADE)
   
   avgscore = models.FloatField(default=0, editable=False)
   voteno = models.IntegerField(default=0, editable=False)
@@ -437,7 +434,7 @@ class Song(models.Model):
     reasons = self.addDisallowed() #check song can be added
     if reasons:
       reason, shortreason = reasons
-      raise AddError, (reason, shortreason)
+      raise AddError(reason, shortreason)
     profile = user.userprofile
     reasons = profile.addDisallowed() #check user can add
     token_used = False
@@ -449,7 +446,7 @@ class Song(models.Model):
         token_used = True
         profile.save()
       else:
-        raise AddError, (reason, shortreason)
+        raise AddError(reason, shortreason)
     if self.unban_adds:
       self.unban_adds -= 1
       if self.unban_adds == 0:
@@ -540,7 +537,7 @@ class Song(models.Model):
     then deleting it.
     """
     if PlaylistEntry.objects.nowPlaying().song == song:
-      raise SongPlayingError, "song merged is playing at the moment"
+      raise SongPlayingError("song merged is playing at the moment")
     for comment in song.comments.all():
       self.comments.add(comment)
     
@@ -591,7 +588,7 @@ class Song(models.Model):
     
   class Meta:
     permissions = (
-    ("view_song",  "g2 Can view song pages"), 
+    # ("view_song",  "g2 Can view song pages"), playlist.Song: (auth.E005) The permission codenamed 'view_song' clashes with a builtin permission for model 'playlist.Song'.
     ("upload_song",  "g2 Can upload songs"),
     ("ban_song",  "g2 Can ban songs"),
     ("edit_song", "g2 Can edit all songs."),
@@ -611,7 +608,7 @@ class SongDirManager(models.Manager):
     try:
       return super(SongDirManager, self).filter(usable=True)[0]
     except IndexError:
-      raise StorageError, "there are no usable directories available for storage"
+      raise StorageError("there are no usable directories available for storage")
 
    
 class SongDir(models.Model):
@@ -637,7 +634,7 @@ class SongDir(models.Model):
     temp_file = open(temp_path)
 
     try:
-      new_file.write(temp_file.read())
+      new_file.write(try_read(temp_file.read()))
     finally:
       temp_file.close() #temp file so no need to delete
       new_file.close()
@@ -671,8 +668,8 @@ class Emoticon(models.Model):
 
 class Comment(models.Model):
   text = models.CharField(max_length=4000)
-  user = models.ForeignKey(User, editable=False, related_name="comments")
-  song = models.ForeignKey(Song, editable=False, related_name="comments")
+  user = models.ForeignKey(User, editable=False, related_name="comments", on_delete=models.CASCADE)
+  song = models.ForeignKey(Song, editable=False, related_name="comments", on_delete=models.CASCADE)
   time = models.IntegerField(default=0)
   datetime = models.DateTimeField()
   
@@ -682,7 +679,7 @@ class Comment(models.Model):
         self.datetime = datetime.datetime.today()
         
     if len(self.text) > 400:
-      raise CommentTooLongError, "comment must be less than 400 characters"
+      raise CommentTooLongError("comment must be less than 400 characters")
     
     self.text = self._add_emoticons(self.text)
     super(Comment, self).save(*args, **kwargs)
@@ -736,8 +733,8 @@ class PlaylistManager(models.Manager):
     
 class PlaylistEntry(models.Model):
   
-  song = models.ForeignKey(Song, related_name="entries")
-  adder = models.ForeignKey(User)
+  song = models.ForeignKey(Song, related_name="entries", on_delete=models.CASCADE)
+  adder = models.ForeignKey(User, on_delete=models.CASCADE)
   addtime = models.DateTimeField()
   playtime = models.DateTimeField(null=True, blank=True)
   playing = models.BooleanField(default=False)
@@ -807,8 +804,8 @@ class RemovedEntry(models.Model):
     super(RemovedEntry, self).save()
     
 class OldPlaylistEntry(models.Model):
-  song = models.ForeignKey(Song, related_name="oldentries")
-  adder = models.ForeignKey(User)
+  song = models.ForeignKey(Song, related_name="oldentries", on_delete=models.CASCADE)
+  adder = models.ForeignKey(User, on_delete=models.CASCADE)
   addtime = models.DateTimeField()
   playtime = models.DateTimeField()
   skipped = models.BooleanField(default=False)
@@ -839,7 +836,7 @@ class Show(models.Model):
   """A DJ show scheduled for the future"""
   start_time = models.DateTimeField()
   end_time = models.DateTimeField()
-  owner = models.ForeignKey(User, related_name="shows")
+  owner = models.ForeignKey(User, related_name="shows", on_delete=models.CASCADE)
   name = models.CharField(max_length=200)
   description = models.CharField(max_length=2500)
   reschedule = models.BooleanField()
@@ -849,15 +846,15 @@ class OldShow(models.Model):
   """Recorded show. Also used for current shows"""
   start_time = models.DateTimeField(blank=True, null=True)
   end_time = models.DateTimeField(blank=True, null=True)
-  owner = models.ForeignKey(User, related_name="oldshows")
+  owner = models.ForeignKey(User, related_name="oldshows", on_delete=models.CASCADE)
   name = models.CharField(max_length=200)
   description = models.CharField(max_length=2500)
   playing = models.BooleanField(default=True)
   
 class ShowRating(models.Model):
   score = models.FloatField()
-  user = models.ForeignKey(User, related_name='show_ratings')
-  show = models.ForeignKey(OldShow, related_name='ratings')
+  user = models.ForeignKey(User, related_name='show_ratings', on_delete=models.CASCADE)
+  show = models.ForeignKey(OldShow, related_name='ratings', on_delete=models.CASCADE)
   
   def __unicode__(self): return unicode(self.rating)
   
@@ -867,8 +864,8 @@ class ShowRating(models.Model):
 
 class ShowComment(models.Model):
   text = models.CharField(max_length=400)
-  user = models.ForeignKey(User, editable=False, related_name="show_comments")
-  show = models.ForeignKey(OldShow, editable=False, related_name="comments")
+  user = models.ForeignKey(User, editable=False, related_name="show_comments", on_delete=models.CASCADE)
+  show = models.ForeignKey(OldShow, editable=False, related_name="comments", on_delete=models.CASCADE)
   time = models.DateTimeField()
   
   def save(self):
@@ -881,7 +878,7 @@ class ShowComment(models.Model):
 
 class ShowMinute(models.Model):
   """Minutely recording of various show statistics"""
-  show = models.ForeignKey(OldShow, related_name="minutes")
+  show = models.ForeignKey(OldShow, related_name="minutes", on_delete=models.CASCADE)
   time = models.DateTimeField()
   listeners = models.IntegerField()
   metadata = models.CharField(max_length=300)
