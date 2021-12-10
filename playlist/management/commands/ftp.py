@@ -3,20 +3,15 @@ import sys
 sys.path.append('/srv')
 sys.path.append('/srv/pydj')
 sys.path.append('/srv/pydj/apps')
-print(sys.path)
+
 import os
 import os.path
 import threading
 import time
 import errno
 import logging
-import django
 
 from django.conf import settings
-
-#settings.configure()
-#django.setup()
-
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.core.management.base import BaseCommand
@@ -26,7 +21,7 @@ from pyftpdlib.servers import FTPServer
 from pyftpdlib.authorizers import DummyAuthorizer, AuthorizerError
 
 from playlist.upload import UploadedFile, UnsupportedFormatError, CorruptFileError
-from playlist.models import FileTooBigError, DuplicateError
+from playlist.models import FileTooBigError, DuplicateError, StorageError
 
 
 class Command(BaseCommand):
@@ -59,6 +54,9 @@ class G2FTPHandler(FTPHandler):
         return
       except DuplicateError:
         self.respond("556 ERROR: file an exact duplicate. Search before uploading!")
+        return
+      except StorageError as e:
+        self.respond("557 ERROR: " + str(e))
         return
       finally:
         os.remove(file)

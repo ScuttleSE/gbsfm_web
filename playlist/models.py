@@ -117,7 +117,8 @@ class UserProfile(models.Model):
       return #do nothing while cackling quietly
     try:
       Song.objects.get(sha_hash=upload.info['sha_hash'])
-    except Song.DoesNotExist: pass
+    except Song.DoesNotExist:
+      pass
     else:
       raise DuplicateError("song already in database")
     
