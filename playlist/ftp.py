@@ -48,13 +48,13 @@ class G2FTPHandler(FTPHandler):
     def handle():
       try:
         User.objects.get(username=self.username).userprofile.uploadSong(UploadedFile(file))
-      except UnsupportedFormatError, e:
+      except UnsupportedFormatError as e:
         self.respond("557 ERROR: file format not supported")
         return
-      except CorruptFileError, e:
+      except CorruptFileError as e:
         self.respond("554 ERROR: file corrupt")
         return
-      except FileTooBigError, e:
+      except FileTooBigError as e:
         self.respond("555 ERROR: file too big. Hi Jormagund!")
         return
       except DuplicateError:
@@ -104,7 +104,7 @@ def error_logger(msg):
     f3.flush()
   
 def main():
-  logging.basicConfig(filename='/srv/logs/ftpd.log', level=logging.INFO)
+  logging.basicConfig(filename=settings.LOG_DIR + '/ftpd.log', level=logging.INFO)
   authorizer = G2Authorizer()
   ftp_handler = G2FTPHandler
   ftp_handler.authorizer = authorizer

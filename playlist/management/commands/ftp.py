@@ -104,7 +104,7 @@ def error_logger(msg):
     f3.flush()
   
 def main():
-  logging.basicConfig(filename='/srv/logs/ftpd.log', level=logging.INFO)
+  logging.basicConfig(filename=settings.LOG_DIR + '/ftpd.log', level=logging.INFO)
   authorizer = G2Authorizer()
   ftp_handler = G2FTPHandler
   ftp_handler.authorizer = authorizer
