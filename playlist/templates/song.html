@@ -49,7 +49,7 @@
 {% if edit %}
 <form action='{% url 'song' song.id %}' method="post">
     {% for field in editform %}
-      {% ifequal field.label "Artist" %}
+      {% if field.label == "Artist" %}
       <tr>
         <td>{{ field.label_tag }}:</td>
         <td>
@@ -58,7 +58,7 @@
         </td>
       </tr>
       {% else %}
-      {% ifequal field.label "Album" %}
+      {% if field.label == "Album" %}
       <tr>
         <td>{{ field.label_tag }}:</td>
         <td>
@@ -74,8 +74,8 @@
           {{ field }}
         </td>
       </tr>
-      {% endifequal %}
-      {% endifequal %}
+      {% endif %}
+      {% endif %}
     {% endfor %}
 <input type="submit" value="Update" />
 </form>
@@ -158,11 +158,11 @@
   <tr>
     <td>Vote:</td>
     <td class="details">
-      <a {% ifequal vote 1 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "1" %}">1</a>
-      <a {% ifequal vote 2 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "2" %}">2</a>
-      <a {% ifequal vote 3 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "3" %}">3</a>
-      <a {% ifequal vote 4 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "4" %}">4</a>
-      <a {% ifequal vote 5 %} class="voted"{% endifequal %} href="{% url 'rate' song.id "5" %}">5</a>
+      <a {% if vote == 1 %} class="voted"{% endif %} href="{% url 'rate' song.id "1" %}">1</a>
+      <a {% if vote == 2 %} class="voted"{% endif %} href="{% url 'rate' song.id "2" %}">2</a>
+      <a {% if vote == 3 %} class="voted"{% endif %} href="{% url 'rate' song.id "3" %}">3</a>
+      <a {% if vote == 4 %} class="voted"{% endif %} href="{% url 'rate' song.id "4" %}">4</a>
+      <a {% if vote == 5 %} class="voted"{% endif %} href="{% url 'rate' song.id "5" %}">5</a>
     </td>
   </tr>
   <tr>

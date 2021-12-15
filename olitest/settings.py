@@ -23,7 +23,7 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '192.168.0.171', 'gbsfm', 'updated.gbs.fm', 'www.gbs.fm', 'gbs.fm', '192.168.0.134', 'gbsfm.hemma.lokal']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '192.168.0.171', 'gbsfm', 'updated.gbs.fm', 'www.gbs.fm', 'gbs.fm', '192.168.0.134', 'gbsfm.hemma.lokal', 'docker4', 'beta.gbs.fm']
 
 TIME_ZONE = 'Europe/London'
 
