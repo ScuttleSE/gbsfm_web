@@ -48,6 +48,7 @@
     </td>
 {% if edit %}
 <form action='{% url 'song' song.id %}' method="post">
+  {% csrf_token %}
     {% for field in editform %}
       {% if field.label == "Artist" %}
       <tr>
