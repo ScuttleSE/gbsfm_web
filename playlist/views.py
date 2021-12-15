@@ -1224,8 +1224,8 @@ def next(request, authid):
   return HttpResponse()
 
 def newregister(request):
-  get_authcode = lambda randcode: md5(settings.SECRET_KEY + randcode).hexdigest()
-  get_randcode = lambda: md5(str(getrandbits(64))).hexdigest()
+  get_authcode = lambda randcode: md5((settings.SECRET_KEY + randcode).encode('utf-8')).hexdigest()
+  get_randcode = lambda: md5(str(getrandbits(64)).encode('utf-8')).hexdigest()
   error = ""
   if request.method == "POST":
 
@@ -1243,7 +1243,7 @@ def newregister(request):
       if LIVE:
         try:
           profile = SAProfile(username)
-        except URLError:
+        except URLError as e:
           error = "Couldn't find your profile. Check you haven't made a typo and that SA isn't down."
           #error = None
 

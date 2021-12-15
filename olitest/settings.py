@@ -19,7 +19,8 @@ DATABASES = {
         'NAME': 'gbsfm',
         'USER': other_settings.DATABASE_USERNAME,
         'PASSWORD': other_settings.DATABASE_PASSWORD,
-        'HOST': other_settings.DATABASE_HOST
+        'HOST': other_settings.DATABASE_HOST,
+        'ATOMIC_REQUESTS': True
     }
 }
 
