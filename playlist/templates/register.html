@@ -17,6 +17,7 @@
     <span class="error">{{error}}</span>
     {% endif %}
     <form enctype="multipart/form-data" action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
       {{ form.as_p }}
       <p>Now put your verification code, <em>{{authcode}}</em>, anywhere in the About Me, Location, Occupation or Interest fields of your <a href="https://forums.somethingawful.com/member.php?action=editprofile">Something Awful profile</a> and press the button below.</p>
       <p>If you need assistance, find us on <a href="https://discordapp.com/invite/5rsyDSj">Discord. We can also help you get an account if you for some reason can't access your Something Awful profile.</a></p>
