@@ -7,7 +7,7 @@
 {% block main %}
 <div class="playlist">
 
-<p>Your API key:</p> 
+<p>Your API key:</p>
 <p><div style="border-style: dashed; border-width: 1px; padding:5px; display: inline;"><strong>{{api_key}}</strong></div></p>
 
 <p>This can be used for third party applications and clients that want to act on your behalf, but that you do not want to give your password to. It can be used to do things like make votes and comments under your name, but cannot be used to do more destuctive things, like to delete songs you have uploaded or to change your password.</p>
@@ -19,9 +19,10 @@
 <p>Change password:</p>
 <table>
 <form action="{% url 'user_settings' %}" method="POST">
+{% csrf_token %}
 {{password_form.as_table}}
 </table>
 <p><input type="submit" value="Change Password" /></p>
 </form>
 
-{% endblock %} 
+{% endblock %}
