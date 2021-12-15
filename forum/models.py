@@ -11,7 +11,7 @@ import datetime
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-
+from django.urls import reverse
 from forum.managers import ForumManager
 
 FORUM_PAGINATION = getattr(settings, 'FORUM_PAGINATION', 10)
@@ -70,7 +70,7 @@ class Forum(models.Model):
         return p_list
 
     def get_absolute_url(self):
-        from django.core.urlresolvers import reverse
+        from django.urls import reverse
         p_list = self._recurse_for_parents_slug(self)
         p_list.append(self.slug)
         return '%s%s/' % (reverse('forum_index'), '/'.join (p_list))
@@ -208,10 +208,9 @@ class Thread(models.Model):
         f.save()
     
     def get_absolute_url(self):
-        return ('forum_view_thread', [str(self.id)])
+        url = reverse('forum_view_thread', args=[str(self.id)])
+        return url
 
-    #get_absolute_url = models.permalink(get_absolute_url)
-    
     def __unicode__(self):
         return u'%s' % self.title    
 
@@ -273,7 +272,8 @@ class Post(models.Model):
         page = int(posts.index(self)/FORUM_PAGINATION)+1
         
         pageno = FORUM_PAGINATION
-        return '%s?page=%d#post%s' % (self.thread.get_absolute_url(), page, self.id)
+        absolute_url = reverse('forum_view_thread', args=[str(self.thread.id)])
+        return '%s?page=%d#post%s' % (absolute_url, page, self.id)
         
     #objects = PostManager()
     
