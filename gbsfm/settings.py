@@ -132,6 +132,8 @@ INSTALLED_APPS = [
 
 ]
 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 0
+
 LOGIN_REDIRECT_URL = 'playlist'
 
 # Default primary key field type
