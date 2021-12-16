@@ -1,5 +1,5 @@
 import sys, os
-import olitest.other_settings as other_settings
+import gbsfm.other_settings as other_settings
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -81,7 +81,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'olitest.wsgi.application'
+WSGI_APPLICATION = 'gbsfm.wsgi.application'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -115,7 +115,7 @@ MIDDLEWARE = [
 
 AUTH_PROFILE_MODULE = 'playlist.userprofile'
 
-ROOT_URLCONF = 'olitest.urls'
+ROOT_URLCONF = 'gbsfm.urls'
 
 INSTALLED_APPS = [
     'playlist',
