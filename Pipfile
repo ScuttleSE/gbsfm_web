@@ -9,6 +9,7 @@ mysqlclient = "*"
 mutagen = "*"
 pyftpdlib = "*"
 uwsgi = "*"
+validators = "*"
 
 [dev-packages]
 

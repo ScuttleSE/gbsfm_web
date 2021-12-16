@@ -9,8 +9,8 @@ Original Author: Will McGugan (http://www.willmcgugan.com)
 __version__ = "1.1.4"
 
 import re
-from urllib import quote, unquote, quote_plus, urlencode
-from urlparse import urlparse, urlunparse
+from urllib.parse import quote, unquote, quote_plus, urlencode
+from urllib.parse import urlparse, urlunparse
 
 pygments_available = True
 try:
@@ -308,12 +308,12 @@ class LinkTag(TagBase):
             safe_chars = self._safe_chars
             def replace(c):
                 if c not in safe_chars:
-                    return "%%%02X"%ord(c)
+                    return "%%%02X" % ord(c)
                 else:
                     return c
             return "".join([replace(c) for c in s])
 
-        self.url = percent_encode(url.encode('utf-8', 'replace'))
+        self.url = percent_encode(url).encode('utf-8', 'replace')
         self.domain = domain
 
         if not self.url:
@@ -648,7 +648,7 @@ class MultiReplace:
 
         # string to string mapping; use a regular expression
         keys = repl_dict.keys()
-        keys.sort(reverse=True) # lexical order
+        sorted(keys, key=None, reverse=True)  # lexical order
         pattern = u"|".join([re.escape(key) for key in keys])
         self.pattern = re.compile(pattern)
         self.dict = repl_dict
@@ -1008,8 +1008,8 @@ class PostMarkup(object):
 
         """
 
-        if not isinstance(post_markup, unicode):
-            post_markup = unicode(post_markup, encoding, 'replace')
+        if not isinstance(post_markup, str):
+            post_markup = str(post_markup, encoding, 'replace')
 
         if auto_urls:
             post_markup = self.tagify_urls(post_markup)
@@ -1255,7 +1255,7 @@ def _tests():
     post_markup = create(use_pygments=True)
 
     tests = []
-    print """<link rel="stylesheet" href="code.css" type="text/css" />\n"""
+    print ("""<link rel="stylesheet" href="code.css" type="text/css" />\n""")
 
     tests.append(']')
     tests.append('[')
@@ -1374,10 +1374,10 @@ asdasdasdasdqweqwe
     #tests=["""[b]b[i]i[/b][/i]"""]
 
     for test in tests:
-        print u"<pre>%s</pre>"%str(test.encode("ascii", "xmlcharrefreplace"))
-        print u"<p>%s</p>"%str(post_markup(test).encode("ascii", "xmlcharrefreplace"))
-        print u"<hr/>"
-        print
+        print (u"<pre>%s</pre>"%str(test.encode("ascii", "xmlcharrefreplace")))
+        print (u"<p>%s</p>"%str(post_markup(test).encode("ascii", "xmlcharrefreplace")))
+        print (u"<hr/>")
+        #print(
 
     #print repr(post_markup('[url=<script>Attack</script>]Attack[/url]'))
 
@@ -1398,10 +1398,10 @@ This is the footer
 [/section]
 More text"""
 
-    print smarkup(test, paragraphs=True, clean=False)
+    print(smarkup(test, paragraphs=True, clean=False))
     tag_data = {}
-    print smarkup(test, tag_data=tag_data, paragraphs=True, clean=True)
-    print tag_data
+    print(smarkup(test, tag_data=tag_data, paragraphs=True, clean=True))
+    print(tag_data)
 
 def _run_unittests():
 
@@ -1492,16 +1492,16 @@ def _ff_test():
     from time import time
 
     start = time()
-    for n in xrange(REPEAT):
+    for n in range(REPEAT):
         ff1(text, 0, "a", "b")
     end = time()
-    print end - start
+    print(end - start)
 
     start = time()
-    for n in xrange(REPEAT):
+    for n in range(REPEAT):
         ff2(text, 0, "a", "b")
     end = time()
-    print end - start
+    print (end - start)
 
 
 

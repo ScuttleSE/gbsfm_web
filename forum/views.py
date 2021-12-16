@@ -90,7 +90,8 @@ class ThreadListView(ListView):
         if self.request.user.is_authenticated:
             s = t.subscription_set.select_related().filter(author=self.request.user)
         #last read post system
-        last_post = min((page*FORUM_PAGINATION, posts.count()))-1
+        temp = min(int(page)*FORUM_PAGINATION, posts.count())
+        last_post = temp-1
         try:
             lastread = LastRead.objects.get(user=self.request.user, thread=t)
             lastread.post = posts[last_post]
