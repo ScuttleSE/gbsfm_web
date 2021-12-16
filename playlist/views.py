@@ -888,7 +888,7 @@ def download_song(request, songid):
     raise Http404
 
   response = HttpResponse(content_type="audio/mpeg")
-  fsock = open(song.getPath(),"r")
+  fsock = open(song.getPath(),"rb")
   response = HttpResponse(fsock, content_type="audio/mpeg")
   try:
     response['Content-Disposition'] = 'attachment; filename="' + song.title + "." + song.format + '"'
