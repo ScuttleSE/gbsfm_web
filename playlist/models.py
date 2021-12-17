@@ -17,6 +17,7 @@ from django.db.models.query import QuerySet
 from playlist.utils import getObj, try_read
 from playlist.cue import CueFile
 from django.template.defaultfilters import safe, force_escape
+from django.utils import timezone
 
 
 
@@ -189,7 +190,8 @@ class UserProfile(models.Model):
     if PlaylistEntry.objects.filter(song=song) or OldPlaylistEntry.objects.filter(song=song):
       return False #on playlist
     td = datetime.timedelta(days=1)
-    now = datetime.datetime.now()
+    #now = datetime.datetime.now()
+    now = timezone.now()
     if (now < song.add_date+td) and (self.user == song.uploader):
       return True
     return False
