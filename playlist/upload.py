@@ -9,6 +9,7 @@ from mutagen.oggvorbis import OggVorbis
 from mutagen.oggopus import OggOpus
 from mutagen.easymp4 import EasyMP4
 from mutagen.mp3 import HeaderNotFoundError
+from mutagen.musepack import Musepack
 import hashlib
 from playlist.utils import try_read
 
@@ -19,7 +20,7 @@ class UnsupportedFormatError(Exception): pass
 class CorruptFileError(Exception): pass
 
 class UploadedFile:
-  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2'] #TODO: make this a config option for god's sake
+  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2', 'ra', 'ram', 'mpc'] #TODO: make this a config option for god's sake
   def __init__(self, file, realname=None, filetype=None):
 
     self.type = filetype
@@ -171,10 +172,39 @@ class UploadedFile:
 
   def _fillMP2Tags(self):
     # No mutagen support
-    tags = {}
+    tags = utils.ffprobe_tags_from_file(self.file)
     tags['format'] = "mp2"
     self.info.update(tags)
     self._fillInfoTags(None)
+
+  def _fillRATags(self):
+    # No mutagen support
+    tags = utils.ffprobe_tags_from_file(self.file)
+    tags['format'] = "ra"
+    self.info.update(tags)
+    self._fillInfoTags(None)
+
+  def _fillRAMTags(self):
+    # No mutagen support
+    tags = utils.ffprobe_tags_from_file(self.file)
+    tags['format'] = "ram"
+    self.info.update(tags)
+    self._fillInfoTags(None)
+
+  def _fillMPCTags(self):
+    # musepack
+    try:
+      song = Musepack(self.file)
+    except HeaderNotFoundError:
+      raise CorruptFileError
+
+    tags = {}
+    tags['length'] = round(song.info.length)
+    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
+    tags['format'] = "ogg"
+    self.info.update(tags)
+
+    self._fillInfoTags(song)
 
 
   def _fillInfoTags(self, song):
