@@ -196,11 +196,11 @@ def carplay(request, lastid=None):
 
 def jsplaylist(request, lastid=None):
 
-  if lastid is None:
-    try:
-      historylength = request.user.userprofile.s_playlistHistory
-    except AttributeError:
-      historylength = 10
+  #if lastid is None:
+  #  try:
+  #    historylength = request.user.userprofile.s_playlistHistory
+  #  except AttributeError:
+  historylength = 10
 
   aug_playlist = Playlist(request.user, historylength).fullList()
   accuracy = 1 #TODO: make accuracy user setting
