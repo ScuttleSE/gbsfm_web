@@ -155,15 +155,15 @@ class UploadedFile:
 
   def _fillWEBMTags(self):
     # No mutagen support
-    tags = {}
-    tags['format'] = "opus"
+    tags = utils.ffprobe_tags_from_file(self.file)
+    tags['format'] = "webm"
     self.info.update(tags)
     self._fillInfoTags(None)
 
 
   def _fillVQFTags(self):
     # No mutagen support
-    tags = {}
+    tags = utils.ffprobe_tags_from_file(self.file)
     tags['format'] = "vqf"
     self.info.update(tags)
     self._fillInfoTags(None)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import hashlib
-from subprocess import Popen
+from subprocess import Popen, PIPE
 import os
 import re
 
@@ -163,6 +163,23 @@ def listenerCount(url):
 
 def gbsfmListenerCount():
   return listenerCount(settings.STREAMINFO_URL)
+
+def ffprobe_tags_from_file(file):
+  tags = {}
+  try:
+    p = Popen(["ffprobe", file], stdout=PIPE, stderr=PIPE)
+    (ffOutput, ffErr) = p.communicate()
+    # the output is in ffErr, weird
+    durationpattern = re.compile("(?<=Duration\:\ )(.*?)(?=\,)")
+    bitratepattern = re.compile("(?<=bitrate:\ )(.*?)(?=\ [a-zA-Z])")
+    length = round(float(durationpattern.search(str(ffErr))[0].replace(':','')))
+    bitrate = round(float(bitratepattern.search(str(ffErr))[0]))
+    tags['length'] = length
+    tags['bitrate'] = bitrate
+
+  except UnicodeDecodeError:
+    pass
+  return tags
 
 
 def try_read(file):
