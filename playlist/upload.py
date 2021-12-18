@@ -20,7 +20,7 @@ class UnsupportedFormatError(Exception): pass
 class CorruptFileError(Exception): pass
 
 class UploadedFile:
-  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2', 'ra', 'ram', 'mpc'] #TODO: make this a config option for god's sake
+  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2', 'ra', 'ram', 'mpc', 'xm', 's3m', 'it', 'mod' ] #TODO: make this a config option for god's sake
   def __init__(self, file, realname=None, filetype=None):
 
     self.type = filetype
@@ -188,6 +188,34 @@ class UploadedFile:
     # No mutagen support
     tags = utils.ffprobe_tags_from_file(self.file)
     tags['format'] = "ram"
+    self.info.update(tags)
+    self._fillInfoTags(None)
+
+  def _fillXMTags(self):
+    # No mutagen support
+    tags = utils.ffprobe_tags_from_file(self.file)
+    tags['format'] = "xm"
+    self.info.update(tags)
+    self._fillInfoTags(None)
+
+  def _fillS3MTags(self):
+    # No mutagen support
+    tags = utils.ffprobe_tags_from_file(self.file)
+    tags['format'] = "s3m"
+    self.info.update(tags)
+    self._fillInfoTags(None)
+
+  def _fillITTags(self):
+    # No mutagen support
+    tags = utils.ffprobe_tags_from_file(self.file)
+    tags['format'] = "it"
+    self.info.update(tags)
+    self._fillInfoTags(None)
+
+  def _fillMODTags(self):
+    # No mutagen support
+    tags = utils.ffprobe_tags_from_file(self.file)
+    tags['format'] = "mod"
     self.info.update(tags)
     self._fillInfoTags(None)
 
