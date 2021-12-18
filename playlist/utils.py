@@ -172,7 +172,8 @@ def ffprobe_tags_from_file(file):
     # the output is in ffErr, weird
     durationpattern = re.compile("(?<=Duration\:\ )(.*?)(?=\,)")
     bitratepattern = re.compile("(?<=bitrate:\ )(.*?)(?=\ [a-zA-Z])")
-    length = round(float(durationpattern.search(str(ffErr))[0].replace(':','')))
+    hours, minutes, seconds = durationpattern.search(str(ffErr))[0].split(':')
+    length = round(float(hours)*60*60 + float(minutes)*60 + float(seconds))
     bitrate = round(float(bitratepattern.search(str(ffErr))[0]))
     tags['length'] = length
     tags['bitrate'] = bitrate
