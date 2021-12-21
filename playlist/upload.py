@@ -6,6 +6,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from mutagen.oggvorbis import OggVorbis
+from mutagen.oggopus import OggOpus
 from mutagen.asf import ASF
 from mutagen.easymp4 import EasyMP4
 from mutagen.mp3 import HeaderNotFoundError
@@ -20,7 +21,7 @@ class UnsupportedFormatError(Exception): pass
 class CorruptFileError(Exception): pass
 
 class UploadedFile:
-  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2', 'ra', 'ram', 'mpc', 'xm', 's3m', 'it', 'mod', 'wma'] #TODO: make this a config option for god's sake
+  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'opus', 'vqf', 'mp2', 'ra', 'ram', 'mpc', 'xm', 's3m', 'it', 'mod', 'wma'] #TODO: make this a config option for god's sake
   def __init__(self, file, realname=None, filetype=None):
 
     self.type = filetype
@@ -152,6 +153,22 @@ class UploadedFile:
     tags['length'] = round(song.info.length)
     tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
     tags['format'] = "ogg"
+    self.info.update(tags)
+
+    self._fillInfoTags(song)
+
+
+  def _fillOPUSTags(self):
+    """Returns dict with tags and stuff"""
+    try:
+      song = OggOpus(self.file)
+    except HeaderNotFoundError:
+      raise CorruptFileError
+
+    tags = {}
+    tags['length'] = round(song.info.length)
+    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
+    tags['format'] = "opus"
     self.info.update(tags)
 
     self._fillInfoTags(song)
