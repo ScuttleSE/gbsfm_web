@@ -6,7 +6,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from mutagen.oggvorbis import OggVorbis
-from mutagen.oggopus import OggOpus
+from mutagen.asf import ASF
 from mutagen.easymp4 import EasyMP4
 from mutagen.mp3 import HeaderNotFoundError
 from mutagen.musepack import Musepack
@@ -20,7 +20,7 @@ class UnsupportedFormatError(Exception): pass
 class CorruptFileError(Exception): pass
 
 class UploadedFile:
-  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2', 'ra', 'ram', 'mpc', 'xm', 's3m', 'it', 'mod' ] #TODO: make this a config option for god's sake
+  supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'vqf', 'mp2', 'ra', 'ram', 'mpc', 'xm', 's3m', 'it', 'mod', 'wma'] #TODO: make this a config option for god's sake
   def __init__(self, file, realname=None, filetype=None):
 
     self.type = filetype
@@ -83,6 +83,7 @@ class UploadedFile:
       #value empty
       return default
 
+
   def _fillMP3Tags(self):
     """Returns dict with tags and stuff"""
     tags = {}
@@ -100,6 +101,7 @@ class UploadedFile:
 
     self._fillInfoTags(song)
 
+
   def _fillFLACTags(self):
     """Returns dict with tags and stuff"""
     tags = {}
@@ -108,7 +110,6 @@ class UploadedFile:
       song = FLAC(self.file)
     except HeaderNotFoundError:
       raise CorruptFileError
-
 
     tags = {}
     tags['length'] = round(song.info.length)
@@ -122,6 +123,7 @@ class UploadedFile:
   def _fillM4ATags(self):
     self._fillMP4Tags() #same format
     self.info["format"] = "m4a" #avoid confusion
+
 
   def _fillMP4Tags(self):
     """Returns dict with tags and stuff"""
@@ -154,6 +156,39 @@ class UploadedFile:
 
     self._fillInfoTags(song)
 
+
+  def _fillMPCTags(self):
+    # musepack
+    try:
+      song = Musepack(self.file)
+    except HeaderNotFoundError:
+      raise CorruptFileError
+
+    tags = {}
+    tags['length'] = round(song.info.length)
+    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
+    tags['format'] = "ogg"
+    self.info.update(tags)
+
+    self._fillInfoTags(song)
+
+
+  def _fillWMATags(self):
+    """Returns dict with tags and stuff"""
+    try:
+      song = ASF(self.file)
+    except HeaderNotFoundError:
+      raise CorruptFileError
+
+    tags = {}
+    tags['length'] = round(song.info.length)
+    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
+    tags['format'] = "wma"
+    self.info.update(tags)
+
+    self._fillInfoTags(song)
+
+
   def _fillWEBMTags(self):
     # No mutagen support
     tags = utils.ffprobe_tags_from_file(self.file)
@@ -177,12 +212,14 @@ class UploadedFile:
     self.info.update(tags)
     self._fillInfoTags(None)
 
+
   def _fillRATags(self):
     # No mutagen support
     tags = utils.ffprobe_tags_from_file(self.file)
     tags['format'] = "ra"
     self.info.update(tags)
     self._fillInfoTags(None)
+
 
   def _fillRAMTags(self):
     # No mutagen support
@@ -191,12 +228,14 @@ class UploadedFile:
     self.info.update(tags)
     self._fillInfoTags(None)
 
+
   def _fillXMTags(self):
     # No mutagen support
     tags = utils.ffprobe_tags_from_file(self.file)
     tags['format'] = "xm"
     self.info.update(tags)
     self._fillInfoTags(None)
+
 
   def _fillS3MTags(self):
     # No mutagen support
@@ -205,6 +244,7 @@ class UploadedFile:
     self.info.update(tags)
     self._fillInfoTags(None)
 
+
   def _fillITTags(self):
     # No mutagen support
     tags = utils.ffprobe_tags_from_file(self.file)
@@ -212,27 +252,13 @@ class UploadedFile:
     self.info.update(tags)
     self._fillInfoTags(None)
 
+
   def _fillMODTags(self):
     # No mutagen support
     tags = utils.ffprobe_tags_from_file(self.file)
     tags['format'] = "mod"
     self.info.update(tags)
     self._fillInfoTags(None)
-
-  def _fillMPCTags(self):
-    # musepack
-    try:
-      song = Musepack(self.file)
-    except HeaderNotFoundError:
-      raise CorruptFileError
-
-    tags = {}
-    tags['length'] = round(song.info.length)
-    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
-    tags['format'] = "ogg"
-    self.info.update(tags)
-
-    self._fillInfoTags(song)
 
 
   def _fillInfoTags(self, song):
