@@ -167,7 +167,7 @@ class UploadedFile:
     tags = {}
     tags['length'] = round(song.info.length)
     tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
-    tags['format'] = "ogg"
+    tags['format'] = "mpc"
     self.info.update(tags)
 
     self._fillInfoTags(song)
