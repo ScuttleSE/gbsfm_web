@@ -172,6 +172,7 @@
   </tr>
   {% if can_ban and not song.banned %}
   <form action='{% url 'bansong' song.id%}' method="post">
+  {% csrf_token %}
   <tr>
     <td>Ban:</td>
     <td><input id="id_reason" type="text" name="reason" maxlength="100" /></td>
