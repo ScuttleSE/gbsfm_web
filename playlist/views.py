@@ -456,14 +456,14 @@ def api(request, resource=""):
     try:
       return HttpResponse(PlaylistEntry.objects.nowPlaying().song.metadataString() + " - GBS-FM")
     except PlaylistEntry.DoesNotExist:
-      return HtttpResponse("GBS-FM")
+      return HttpResponse("GBS-FM")
 
 
   if resource == "pltitle2":
     try:
       return HttpResponse(PlaylistEntry.objects.nowPlaying().song.metadataString())
     except PlaylistEntry.DoesNotExist:
-      return HtttpResponse("GBS-FM")
+      return HttpResponse("GBS-FM")
 
 
   def getSong(request):
@@ -607,7 +607,7 @@ def api(request, resource=""):
     return HttpResponse(gbsfmListenerCount())
 
   if resource == "users":
-    return HttpResponse(Users.objects.all().count())
+    return HttpResponse(User.objects.all().count())
 
   if resource == "position":
     #cue = CueFile(settings.LOGIC_DIR + "/work/ices.cue")
@@ -618,6 +618,8 @@ def api(request, resource=""):
     d['progress'] = cue.getProgress()
     d['length'] = now_playing.length
     return HttpResponse(json.dumps(d))
+
+  #if resource == "youtubedl":
 
   raise Http404
 
