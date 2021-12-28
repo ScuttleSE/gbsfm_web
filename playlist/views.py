@@ -634,7 +634,6 @@ def api(request, resource=""):
         f.flush()
         temp_filename = f.name
 
-      print("Temp_filename: " + temp_filename)
       if (temp_filename != ""):
         user.userprofile.uploadSong(UploadedFile(temp_filename, filename))
         os.remove(temp_filename)
