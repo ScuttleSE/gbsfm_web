@@ -24,20 +24,11 @@
     <hr>
 
     <form action='{% url 'g2admin' %}' method="POST">
+    {% csrf_token %}
     <table class="playlist">
     {{msgform.as_table}}
     </table>
     <input type="submit" value="Update Message" />
-
-    <!--
-    <form action='{% url 'g2streampw' %}' method="POST">
-    <table class="playlist">
-    {{pwform.as_table}}
-    </table>
-    <input type="submit" value="Update Password" /> -->
-
-
-
   </div>
 
 {% endblock %}
