@@ -16,7 +16,7 @@
     # You can find a copy of the Affero General Public License, Version 1 #
     # at http://www.affero.org/oagpl.html.                                #
     #######################################################################
-
+import tempfile
 from random import getrandbits
 import random
 from hashlib import md5
@@ -44,6 +44,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import permission_required, login_required
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
 
@@ -350,7 +351,7 @@ def ajax(request):
 
     return HttpResponse(json.dumps(events))
 
-
+@csrf_exempt
 def api(request, resource=""):
 
   #authentication
@@ -625,12 +626,35 @@ def api(request, resource=""):
       filename = request.POST["filename"]
       # base64 encoded
       filecontents = request.POST["filecontents"]
-      with open('/tmp/' + filename, 'wb') as f:
-        decoded = base64.b64decode(filecontents)
+      temp_filename = ""
+
+      with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
+        decoded = base64.urlsafe_b64decode(filecontents)
         f.write(decoded)
+        f.flush()
+        temp_filename = f.name
+
+      print("Temp_filename: " + temp_filename)
+      if (temp_filename != ""):
+        user.userprofile.uploadSong(UploadedFile(temp_filename, filename))
+        os.remove(temp_filename)
+      else:
+        raise Exception("Empty filename.")
+
+    except DuplicateError:
+      messages.add_message(request, messages.ERROR, "Error: track already uploaded")
+    except FileTooBigError:
+      messages.add_message(request, messages.ERROR, "Error: file too big")
+    except StorageError:
+      messages.add_message(request, messages.ERROR, "Error: file could not be stored!")
+      messages.add_message(request, messages.ERROR, "Uploaded file successfully!")
+    except Exception as ex:
+      messages.add_message(request, messages.ERROR, "Error: Your request has errors in it. File might be unparsable by ffprobe.")
+      messages.add_message(request, messages.ERROR, ex)
+    else:
+      messages.add_message(request, messages.SUCCESS, "Uploaded file successfully!")
       return HttpResponse(status=200)
-    except Exception:
-      return HttpResponseBadRequest(message="Your request has errors in it")
+    return HttpResponseBadRequest("\n".join([str(x) for x in messages.get_messages(request)]))
 
   raise Http404
 
@@ -1094,9 +1118,9 @@ def upload(request):
       except DuplicateError:
         messages.add_message(request, messages.ERROR, "Error: track already uploaded")
       except FileTooBigError:
-        message = messages.add_message(request, messages.ERROR, "Error: file too big")
+        messages.add_message(request, messages.ERROR, "Error: file too big")
       except StorageError:
-        message = messages.add_message(request, messages.ERROR, "Error: file could not be stored!")
+        messages.add_message(request, messages.ERROR, "Error: file could not be stored!")
       else:
         messages.add_message(request, messages.ERROR, "Uploaded file successfully!")
   else:
