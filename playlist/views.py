@@ -622,11 +622,11 @@ def api(request, resource=""):
     return HttpResponse(json.dumps(d))
 
   if resource == "upload" and request.method == "POST":
+    temp_filename = ""
     try:
       filename = request.POST["filename"]
       # base64 encoded
       filecontents = request.POST["filecontents"]
-      temp_filename = ""
 
       with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
         decoded = base64.urlsafe_b64decode(filecontents)
@@ -636,7 +636,6 @@ def api(request, resource=""):
 
       if (temp_filename != ""):
         user.userprofile.uploadSong(UploadedFile(temp_filename, filename))
-        os.remove(temp_filename)
       else:
         raise Exception("Empty filename.")
 
@@ -652,7 +651,12 @@ def api(request, resource=""):
       messages.add_message(request, messages.ERROR, ex)
     else:
       messages.add_message(request, messages.SUCCESS, "Uploaded file successfully!")
+      if (temp_filename != ""):
+        os.remove(temp_filename)
       return HttpResponse(status=200)
+    finally:
+      if (temp_filename != ""):
+        os.remove(temp_filename)
     return HttpResponseBadRequest("\n".join([str(x) for x in messages.get_messages(request)]))
 
   raise Http404
