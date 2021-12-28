@@ -25,6 +25,7 @@ from subprocess import Popen
 from itertools import chain
 import logging
 import json
+import base64
 
 from django.http import *
 from django.template import Context, loader
@@ -619,7 +620,17 @@ def api(request, resource=""):
     d['length'] = now_playing.length
     return HttpResponse(json.dumps(d))
 
-  #if resource == "youtubedl":
+  if resource == "upload" and request.method == "POST":
+    try:
+      filename = request.POST["filename"]
+      # base64 encoded
+      filecontents = request.POST["filecontents"]
+      with open('/tmp/' + filename, 'wb') as f:
+        decoded = base64.b64decode(filecontents)
+        f.write(decoded)
+      return HttpResponse(status=200)
+    except Exception:
+      return HttpResponseBadRequest(message="Your request has errors in it")
 
   raise Http404
 
@@ -704,7 +715,7 @@ def removeentry(request, entryid):
     messages.add_message(request, messages.ERROR, "Error: insufficient permissions to remove entry")
 
   if request.is_ajax():
-    return HttpResponse(str(success))
+    return HttpResponse(status=200)
   else:
     return HttpResponseRedirect(reverse('playlist'))
 
