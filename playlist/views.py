@@ -623,6 +623,7 @@ def api(request, resource=""):
 
   if resource == "upload" and request.method == "POST":
     temp_filename = ""
+    song_id = -1
     try:
       filename = request.POST["filename"]
       # base64 encoded
@@ -635,7 +636,7 @@ def api(request, resource=""):
         temp_filename = f.name
 
       if (temp_filename != ""):
-        user.userprofile.uploadSong(UploadedFile(temp_filename, filename))
+        song_id = user.userprofile.uploadSong(UploadedFile(temp_filename, filename))
       else:
         raise Exception("Empty filename.")
 
@@ -651,9 +652,7 @@ def api(request, resource=""):
       messages.add_message(request, messages.ERROR, ex)
     else:
       messages.add_message(request, messages.SUCCESS, "Uploaded file successfully!")
-      if (temp_filename != ""):
-        os.remove(temp_filename)
-      return HttpResponse(status=200)
+      return HttpResponse(str(song_id), status=200)
     finally:
       if (temp_filename != ""):
         os.remove(temp_filename)
