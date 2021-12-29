@@ -164,6 +164,7 @@ NEXT_PASSWORD = other_settings.NEXT_PASSWORD
 FTP_BASE_DIR = '/srv/ftpdir'
 #MAX_UPLOAD_SIZE = 115000000
 MAX_UPLOAD_SIZE = 536870912
+DATA_UPLOAD_MAX_MEMORY_SIZE = 714038313 # 133 % of MAX_UPLOAD_SIZE (base64)
 MAX_SONG_LENGTH = 660
 
 # Add SA account details to other_settings.py before going live
