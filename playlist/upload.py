@@ -22,9 +22,10 @@ class CorruptFileError(Exception): pass
 
 class UploadedFile:
   supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'opus', 'vqf', 'mp2', 'ra', 'ram', 'mpc', 'xm', 's3m', 'it', 'mod', 'wma'] #TODO: make this a config option for god's sake
-  def __init__(self, file, realname=None, filetype=None):
+  def __init__(self, file, realname=None, filetype=None, username=None):
 
     self.type = filetype
+    self.username = username
 
     if realname is None:
       realname = os.path.basename(file)
@@ -283,9 +284,10 @@ class UploadedFile:
     across formats"""
 
     tags = {}
+    alt_artistalbum = "Tell " + self.username + " to update them tags!" if self.username is not None else "(unknown)"
     tags['title'] = self._get(song, 'title', self.realname) #use filename as default
-    artist = self._get(song, 'artist', '(unknown')
-    album  = self._get(song, 'album', '(unknown')
+    artist = self._get(song, 'artist', alt_artistalbum)
+    album  = self._get(song, 'album', alt_artistalbum)
     tags['artist'] = Artist.objects.get_or_create(name=artist)[0]
     tags['album'] = Album.objects.get_or_create(name=album)[0]
     tags['genre'], tags['composer'] = self._get(song, 'genre', ""), self._get(song, 'composer', "")

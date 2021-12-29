@@ -636,7 +636,7 @@ def api(request, resource=""):
         temp_filename = f.name
 
       if (temp_filename != ""):
-        song_id = user.userprofile.uploadSong(UploadedFile(temp_filename, filename))
+        song_id = user.userprofile.uploadSong(UploadedFile(temp_filename, filename, username=username))
       else:
         raise Exception("Empty filename.")
 
@@ -1116,7 +1116,7 @@ def upload(request):
     if form.is_valid():
       f = request.FILES['file']
       try:
-        request.user.userprofile.uploadSong(UploadedFile(f.temporary_file_path(), f.name))
+        request.user.userprofile.uploadSong(UploadedFile(f.temporary_file_path(), f.name, username=request.user.username))
       except DuplicateError:
         messages.add_message(request, messages.ERROR, "Error: track already uploaded")
       except FileTooBigError:
