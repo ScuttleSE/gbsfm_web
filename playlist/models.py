@@ -135,6 +135,7 @@ class UserProfile(models.Model):
 
     self.user.userprofile.uploads += 1
     self.user.save()
+    return s.id
 
   def addDisallowed(self, entries=None):
     #check user hasn't got too many songs on the playlist
