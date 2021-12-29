@@ -47,7 +47,7 @@ class G2FTPHandler(FTPHandler):
   
     def handle():
       try:
-        User.objects.get(username=self.username).userprofile.uploadSong(UploadedFile(file))
+        User.objects.get(username=self.username).userprofile.uploadSong(UploadedFile(file, username=User.username))
       except UnsupportedFormatError as e:
         self.respond("557 ERROR: file format not supported")
         return
