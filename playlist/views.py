@@ -740,10 +740,10 @@ def removeentry(request, entryid):
   else:
     messages.add_message(request, messages.ERROR, "Error: insufficient permissions to remove entry")
 
-  if request.is_ajax():
-    return HttpResponse(status=200)
-  else:
-    return HttpResponseRedirect(reverse('playlist'))
+  #if request.is_ajax():
+  #  return HttpResponse(status=200)
+  #else:
+  return HttpResponseRedirect(reverse('playlist'))
 
 @permission_required('playlist.skip_song')
 def skip(request):
