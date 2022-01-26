@@ -127,7 +127,7 @@ def restart_socks():
   Popen([GBSFM_DIR + "/restartstuff.sh", "gbsfm_socks-docker", "hub.hemma.lokal/images/gbsfm-ircbot:latest"])
 
 def restart_shoes():
-  Popen([GBSFM_DIR + "/restartstuff.sh", "gbsfm_shoes-docker", "hub.hemma.lokal/images/gbsfm_discordbot:latest"])
+  Popen([GBSFM_DIR + "/restartstuff.sh", "gbsfm_shoes-docker", "hub.hemma.lokal/images/gbsfm_discordimage:latest"])
 
 def getObj(table, name, oldid=None):
   #get album/artist object if it exists; otherwise create it
