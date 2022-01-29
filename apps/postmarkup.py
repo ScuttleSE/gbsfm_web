@@ -95,9 +95,9 @@ def create(include=None, exclude=None, use_pygments=True, **kwargs):
 
 
     #### new tags ####
-    
+
     add_tag(BugTag, 'bug', 'http://gbs.fm/bugs/ticket/')
-    
+
     #### old tags ####
     add_tag(SimpleTag, 'b', 'strong')
     add_tag(SimpleTag, 'i', 'em')
@@ -106,7 +106,7 @@ def create(include=None, exclude=None, use_pygments=True, **kwargs):
 
     add_tag(LinkTag, 'link', **kwargs)
     add_tag(LinkTag, 'url', **kwargs)
-    
+
 
     add_tag(QuoteTag, 'quote')
 
@@ -201,23 +201,23 @@ class TagBase(object):
 
 class BugTag(TagBase):
   """Tag for linking to bugs on the bugtracker"""
-  
+
   def __init__(self, name, url_prefix, **kwargs):
     """ html_name -- the html tag to substitute."""
     TagBase.__init__(self, name, inline=True)
     self.url_prefix = url_prefix
-    
+
   def render_open(self, parser, node_index):
     try:
       bugid = int(self.params.strip()) #ensure it's an int
     except ValueError:
       return ""
-      
+
     return "<a href='%s'>#%d</a>" % (self.url_prefix + str(bugid), bugid)
-    
+
   def render_close(self, parser, node_index):
     return ""
-    
+
 #### old tags ####
 
 class SimpleTag(TagBase):
@@ -317,12 +317,12 @@ class LinkTag(TagBase):
         self.domain = domain
 
         if not self.url:
-            return u""
+            return ""
 
         if self.domain:
-            return u'<a href="%s">'%self.url
+            return '<a href="%s">'%self.url
         else:
-            return u""
+            return ""
 
 
     def render_close(self, parser, node_index):
