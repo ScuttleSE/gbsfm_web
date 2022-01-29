@@ -17,6 +17,7 @@
 
 <h2>{% trans "Create a Thread" %}</h2>
 <form method='post' action='./'>
+{% csrf_token %}
 {% if form.errors %}<ul>{{ form.errors.as_ul }}</ul>{% endif %}
 <p><label>{% trans "Posting As" %}</label><span>{{ user.username }}</span></p>
 {{ form.as_p }}
