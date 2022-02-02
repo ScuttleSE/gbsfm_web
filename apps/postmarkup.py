@@ -317,12 +317,12 @@ class LinkTag(TagBase):
         self.domain = domain
 
         if not self.url:
-            return ""
+            return u""
 
         if self.domain:
-            return '<a href="%s">'%self.url
+            return u'<a href="%s">'%self.url
         else:
-            return ""
+            return u""
 
 
     def render_close(self, parser, node_index):
