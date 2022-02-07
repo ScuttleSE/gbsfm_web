@@ -313,7 +313,7 @@ class LinkTag(TagBase):
                     return c
             return "".join([replace(c) for c in s])
 
-        self.url = percent_encode(url).encode('utf-8', 'replace')
+        self.url = percent_encode(url)
         self.domain = domain
 
         if not self.url:
