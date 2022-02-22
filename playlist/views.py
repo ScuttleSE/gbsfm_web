@@ -1137,40 +1137,40 @@ def globalstats(request):
 
   # SITE STATS
   # get total number of dongs in database
-  totaldongs = Song.objects.count()
+  #totaldongs = Song.objects.count()
 
   # get total number of playlist adds
-  curtotaladds = PlaylistEntry.objects.count()
-  totaladds = OldPlaylistEntry.objects.count() + curtotaladds
+  #curtotaladds = PlaylistEntry.objects.count()
+  #totaladds = OldPlaylistEntry.objects.count() + curtotaladds
 
   # get total number of unplayed dongs
-  unplayeddongs = Song.objects.select_related().annotate(cnt=Count('oldentries')).exclude(cnt__gt=0).count()
+  #unplayeddongs = Song.objects.select_related().annotate(cnt=Count('oldentries')).exclude(cnt__gt=0).count()
 
   # get total number of registered users, maybe also 'active' users (added a dong in the last week)
-  totalusers = UserProfile.objects.count()
+  #totalusers = UserProfile.objects.count()
 
   # DONG STATS
   # Get 10 most recent uploads
-  recentuploads = Song.objects.select_related().order_by("-add_date")[:10]
+  #recentuploads = Song.objects.select_related().order_by("-add_date")[:10]
 
   # Get 10 most popular dongs by playcount.  Technically we should check the current playlist as well as the playlist
   # history, but this is extra effort for a pretty minor issue, and the global stats page will likely take long enough
   # to load as it is.
 
   # this works, but is horrendously slow
-  populardongs = Song.objects.select_related().annotate(totaladds=Count('oldentries')).order_by('-totaladds')[0:9]
+  #populardongs = Song.objects.select_related().annotate(totaladds=Count('oldentries')).order_by('-totaladds')[0:9]
 
   # do it directly with SQL
-#  from django.db import connection
-#  cursor = connection.cursor()
-#  cursor.execute("SELECT COUNT(playlist_oldplaylistentry.song_id), playlist_song.title FROM playlist_oldplaylistentry, playlist_song WHERE (playlist_oldplaylistentry.song_id = playlist_song.id) GROUP BY playlist_oldplaylistentry.song_id ORDER BY count(playlist_oldplaylistentry.song_id) DESC LIMIT 0,10")
+  #  from django.db import connection
+  #  cursor = connection.cursor()
+  #  cursor.execute("SELECT COUNT(playlist_oldplaylistentry.song_id), playlist_song.title FROM playlist_oldplaylistentry, playlist_song WHERE (playlist_oldplaylistentry.song_id = playlist_song.id) GROUP BY playlist_oldplaylistentry.song_id ORDER BY count(playlist_oldplaylistentry.song_id) DESC LIMIT 0,10")
 
   # Get 10 most and least popular dongs by score, which have at least 10 votes
-  votedhidongs = Song.objects.select_related().filter(voteno__gte=10).order_by("-avgscore")[:10]
-  votedlodongs = Song.objects.select_related().filter(voteno__gte=10).order_by("avgscore")[:10]
+  #votedhidongs = Song.objects.select_related().filter(voteno__gte=10).order_by("-avgscore")[:10]
+  #votedlodongs = Song.objects.select_related().filter(voteno__gte=10).order_by("avgscore")[:10]
 
   # TODO: get dong popularity by most 5s
-#  dongmost5s = Rating.objects.select_related().annotate(fives=
+  #  dongmost5s = Rating.objects.select_related().annotate(fives=
 
   # TODO: get least popular dong by most 1s
 
@@ -1184,9 +1184,10 @@ def globalstats(request):
   # TODO: get 10 users with most adds
   # TODO: get 10 users with most reports/edits
 
-  return render(request, 'stats.html', \
-  {'recentuploads':recentuploads, 'populardongs':populardongs, 'votedhidongs':votedhidongs, 'votedlodongs':votedlodongs,
-  'totaldongs':totaldongs, 'totaladds':totaladds, 'unplayeddongs':unplayeddongs, 'totalusers':totalusers})
+  #return render(request, 'stats.html', \
+  #{'recentuploads':recentuploads, 'populardongs':populardongs, 'votedhidongs':votedhidongs, 'votedlodongs':votedlodongs,
+  #'totaldongs':totaldongs, 'totaladds':totaladds, 'unplayeddongs':unplayeddongs, 'totalusers':totalusers})
+  return render(request, 'stats.html')
 
 @permission_required('playlist.view_artist')
 def artist(request, artistid=None):
