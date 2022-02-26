@@ -25,6 +25,7 @@ from subprocess import Popen
 from itertools import chain
 import logging
 import json
+import ast
 import base64
 
 from django.http import *
@@ -1135,7 +1136,26 @@ def upload(request):
 @login_required()
 def globalstats(request):
 
-  # SITE STATS
+  populardongs = {}
+  popularadders = {}
+  try:
+    with open('/tmp/top10dongs_alltime.json') as f:
+      populardongs = ast.literal_eval(f.read())
+  except:
+    pass
+
+  try:
+    with open('/tmp/top10adders_alltime.json') as f:
+      popularadders = ast.literal_eval(f.read())
+  except:
+    pass
+
+  return render(request, 'stats.html', \
+    {'populardongs':populardongs, \
+     'popularadders':popularadders})
+
+
+# SITE STATS
   # get total number of dongs in database
   #totaldongs = Song.objects.count()
 
@@ -1187,7 +1207,7 @@ def globalstats(request):
   #return render(request, 'stats.html', \
   #{'recentuploads':recentuploads, 'populardongs':populardongs, 'votedhidongs':votedhidongs, 'votedlodongs':votedlodongs,
   #'totaldongs':totaldongs, 'totaladds':totaladds, 'unplayeddongs':unplayeddongs, 'totalusers':totalusers})
-  return render(request, 'stats.html')
+
 
 @permission_required('playlist.view_artist')
 def artist(request, artistid=None):
