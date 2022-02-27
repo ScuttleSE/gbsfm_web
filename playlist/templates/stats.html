@@ -5,6 +5,25 @@
 {% block main %}
   <div class="playlist">
 
+  {% if populardongs %}
+  <p><span style="font-weight: bold">Top 10 dongs of all time:</span></p>
+  <ol>
+    {% for dong in populardongs %}
+      <li>{{dong.artist}} - {{dong.song}}: {{dong.count}} plays</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {% if popularadders %}
+  <p><span style="font-weight: bold">Top 10 adders of all time:</span></p>
+  <ol>
+    {% for adder in popularadders %}
+      <li>{{adder.username}}: {{adder.count}} adds</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {% comment %}
   <p><span class="bold">Dongs in database:</span> {{totaldongs}} </p>
   <p><span class="bold">Additions to the playlist:</span> {{totaladds}} </p>
   <p><span class="bold">Unplayed dongs:</span> {{unplayeddongs}} </p>
@@ -50,7 +69,9 @@
   </ul>
   <p>
   {% endif %}
-  
+
+  {% endcomment %}
   </div>
- 
-{% endblock %} 
+
+
+{% endblock %}
