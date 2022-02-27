@@ -9,7 +9,7 @@
   <p><span style="font-weight: bold">Top 10 dongs of all time:</span></p>
   <ol>
     {% for dong in populardongs %}
-      <li>{{dong.artist}} - {{dong.song}}: {{dong.count}} plays</li>
+      <li><a href="/song/{{dong.song_id}}">{{dong.artist}} - {{dong.song}}</a>: {{dong.count}} plays</li>
     {% endfor %}
   </ol>
   {% endif %}
@@ -18,7 +18,34 @@
   <p><span style="font-weight: bold">Top 10 adders of all time:</span></p>
   <ol>
     {% for adder in popularadders %}
-      <li>{{adder.username}}: {{adder.count}} adds</li>
+      <li><a href="/user/{{adder.adder_id}}">{{adder.username}}</a>: {{adder.count}} adds</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {% if popularadders30 %}
+  <p><span style="font-weight: bold">Top 10 adders last 30 days:</span></p>
+  <ol>
+    {% for adder in popularadders30 %}
+      <li><a href="/user/{{adder.adder_id}}">{{adder.username}}</a>: {{adder.count}} adds</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {% if popularuploaders %}
+  <p><span style="font-weight: bold">Top 10 uploaders of all time:</span></p>
+  <ol>
+    {% for uploader in popularuploaders %}
+      <li><a href="/user/{{uploader.uploader_id}}">{{uploader.username}}</a>: {{uploader.count}} uploads</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {% if popularadders30 %}
+  <p><span style="font-weight: bold">Top 10 uploaders last 30 days:</span></p>
+  <ol>
+    {% for uploader in popularuploaders30 %}
+      <li><a href="/user/{{uploader.uploader_id}}">{{uploader.username}}</a>: {{uploader.count}} uploads</li>
     {% endfor %}
   </ol>
   {% endif %}
