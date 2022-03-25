@@ -235,8 +235,8 @@ def jsplaylist(request, lastid=None):
 	length = PlaylistEntry.objects.length()
 
 	return render(request, 'jsplaylist.html', {'aug_playlist': aug_playlist, 'can_skip': can_skip,
-																						 'lastremoval': lastremoval, 'welcome_message': welcome_message,
-																						 'length': length, 'accuracy': accuracy})
+	                                           'lastremoval': lastremoval, 'welcome_message': welcome_message,
+	                                           'length': length, 'accuracy': accuracy})
 
 
 # return render(request, 'index.html',  {'aug_playlist': aug_playlist, 'msg':msg, 'can_skip':can_skip})
@@ -277,7 +277,7 @@ def ajax(request):
 			pass
 		else:
 			server_playing.song.comment(request.user, comment)
-			# TODO: handle comment being too long gracefully
+	# TODO: handle comment being too long gracefully
 
 	# check for submitted vote
 	if request.user.has_perm("playlist.can_rate"):
@@ -344,7 +344,7 @@ def ajax(request):
 			if len(aug_playlist) > MAX_EVENTS:
 				aug_playlist = aug_playlist[:MAX_EVENTS]
 			html = render_to_string('playlist_table.html', {'aug_playlist': aug_playlist, 'accuracy': accuracy},
-															request=request)
+			                        request=request)
 
 			events.append(("adds", html))
 
@@ -424,7 +424,7 @@ def api(request, resource=""):
 			raise Http404  # songs don't exist
 
 		logging.info("Mod %s (uid %d) merged song with sha_hash %s into %d at %s" %
-								 (request.user.username, request.user.id, old.sha_hash, new.id, now()))
+		             (request.user.username, request.user.id, old.sha_hash, new.id, now()))
 
 		new.merge(old)
 		return HttpResponse()
@@ -447,12 +447,12 @@ def api(request, resource=""):
 		if not lastid: lastid = 0
 		adds = PlaylistEntry.objects.extra(select={"user_vote": "SELECT ROUND(score, 0) FROM playlist_rating WHERE playlist_rating.user_id = \
 		%s AND playlist_rating.song_id = playlist_playlistentry.song_id",
-																							 "avg_score": "SELECT AVG(playlist_rating.score) FROM playlist_rating WHERE playlist_rating.song_id = playlist_playlistentry.song_id",
-																							 "vote_count": "SELECT COUNT(*) FROM playlist_rating WHERE playlist_rating.song_id = playlist_playlistentry.song_id"},
-																			 select_params=[request.user.id]).select_related("song__artist",
-																																											 "song__album",
-																																											 "song__uploader",
-																																											 "adder").order_by(
+		                                           "avg_score": "SELECT AVG(playlist_rating.score) FROM playlist_rating WHERE playlist_rating.song_id = playlist_playlistentry.song_id",
+		                                           "vote_count": "SELECT COUNT(*) FROM playlist_rating WHERE playlist_rating.song_id = playlist_playlistentry.song_id"},
+		                                   select_params=[request.user.id]).select_related("song__artist",
+		                                                                                   "song__album",
+		                                                                                   "song__uploader",
+		                                                                                   "adder").order_by(
 			'addtime').filter(id__gt=lastid)
 		data = serialize("json", adds, relations={
 			'song': {'relations': ('artist'), 'fields': ('title', 'length', 'artist', 'avgscore')},
@@ -620,7 +620,7 @@ def api(request, resource=""):
 		playlistinfo = plinfoq(pldongid)
 		return HttpResponse(
 			str(playlistinfo[0]) + "\n" + playlistinfo[2] + "\n" + playlistinfo[3] + "\n" + playlistinfo[1])
-		# return HttpResponse(playlistinfo)
+	# return HttpResponse(playlistinfo)
 
 	if resource == "listeners":
 		return HttpResponse(gbsfmListenerCount())
@@ -666,7 +666,7 @@ def api(request, resource=""):
 			messages.add_message(request, messages.ERROR, "Uploaded file successfully!")
 		except Exception as ex:
 			messages.add_message(request, messages.ERROR,
-													 "Error: Your request has errors in it. File might be unparsable by ffprobe.")
+			                     "Error: Your request has errors in it. File might be unparsable by ffprobe.")
 			messages.add_message(request, messages.ERROR, ex)
 		else:
 			messages.add_message(request, messages.SUCCESS, "Uploaded file successfully!")
@@ -756,7 +756,7 @@ def removeentry(request, entryid):
 		raise Http404
 	if ((entry.adder == request.user) or request.user.has_perm("playlist.remove_entry")) and not entry.playing:
 		logging.info("User %s (uid %d) removed songid %d from playlist at %s" % (
-		request.user.username, request.user.id, entry.song.id, now()))
+			request.user.username, request.user.id, entry.song.id, now()))
 		entry.remove()
 		messages.add_message(request, messages.SUCCESS, "Entry deleted successfully")
 
@@ -789,7 +789,7 @@ def merge_song(request, mergeeid, mergerid):
 		raise Http404
 
 	logging.info("Mod %s (uid %d) merged song with sha_hash %s into %d at %s" %
-							 (request.user.username, request.user.id, merger.sha_hash, mergee.id, now()))
+	             (request.user.username, request.user.id, merger.sha_hash, mergee.id, now()))
 
 	mergee.merge(merger)
 	messages.add_message(request, messages.SUCCESS, "Song merged in successfully")
@@ -818,12 +818,12 @@ def edit_queue(request, approve=None, deny=None):
 		edit_dict['fields'] = []
 		for field_edit in edit.field_edits.all():
 			edit_dict['fields'].append({'name': field_edit.field,
-																	'old_value': getattr(edit.song, field_edit.field),
-																	'new_value': field_edit.new_value
-																	})
+			                            'old_value': getattr(edit.song, field_edit.field),
+			                            'new_value': field_edit.new_value
+			                            })
 		edits_list.append(edit_dict)
 	return render(request, 'edit_queue.html',
-								{'edits': edits_list})
+	              {'edits': edits_list})
 
 
 @permission_required('playlist.approve_reports')
@@ -881,7 +881,7 @@ def song(request, songid=0, edit=None):
 				# user has correct permissions to edit song
 				editform.save()
 				logging.info("User/mod %s (uid %d) edited songid %d at %s" % (
-				request.user.username, request.user.id, song.id, now()))
+					request.user.username, request.user.id, song.id, now()))
 			else:
 				# queue a SongEdit
 				old_song = Song.objects.get(id=editform.instance.id)  # original version of song
@@ -941,10 +941,10 @@ def song(request, songid=0, edit=None):
 			ratingsagg[trate] = 1
 
 	return render(request, 'song.html', \
-								{'song': song, 'editform': editform, 'edit': edit, 'commentform': commentform,
-								 'currentuser': request.user, 'comments': comments, 'can_ban': can_ban,
-								 'banform': banform, 'can_delete': can_delete, 'vote': vote, 'path': path,
-								 'favourite': favourite, 'addhistory': addhistory, 'ratings': ratingsagg})
+	              {'song': song, 'editform': editform, 'edit': edit, 'commentform': commentform,
+	               'currentuser': request.user, 'comments': comments, 'can_ban': can_ban,
+	               'banform': banform, 'can_delete': can_delete, 'vote': vote, 'path': path,
+	               'favourite': favourite, 'addhistory': addhistory, 'ratings': ratingsagg})
 
 
 @permission_required("playlist.download_song")
@@ -1034,7 +1034,7 @@ def bansong(request, songid=0):
 			song.ban(reason)
 			song.save()
 			logging.info("Mod %s (uid %d) banned songid %d with reason '%s' at %s" % (
-			request.user.username, request.user.id, song.id, reason, now()))
+				request.user.username, request.user.id, song.id, reason, now()))
 
 	return HttpResponseRedirect(reverse('song', args=[songid]))
 
@@ -1044,7 +1044,7 @@ def unbansong(request, songid=0, plays=0):
 	song = Song.objects.get(id=songid)
 	song.unban(plays)
 	logging.info("Mod %s (uid %d) unbanned songid %d for %d plays at %s" % (
-	request.user.username, request.user.id, song.id, int(plays), now()))
+		request.user.username, request.user.id, song.id, int(plays), now()))
 	return HttpResponseRedirect(reverse('song', args=[songid]))
 
 
@@ -1061,8 +1061,8 @@ def deletesong(request, songid=0, confirm=None):
 
 	if request.user.userprofile.canDelete(song):
 		logging.info("User %s (uid %d) deleted song '%s' with hash %s at %s" % (request.user.username, request.user.id,
-																																						song.metadataString(), song.sha_hash,
-																																						now()))
+		                                                                        song.metadataString(), song.sha_hash,
+		                                                                        now()))
 		song.delete()
 		return HttpResponseRedirect(reverse('playlist'))
 	else:
@@ -1100,18 +1100,18 @@ def user(request, userid):
 
 	# average score for uploaded dongs
 	uploadavg = \
-	list(Song.objects.select_related().filter(uploader=owner.id).exclude(voteno=0).aggregate(Avg('avgscore')).values())[
-		0]
+		list(Song.objects.select_related().filter(uploader=owner.id).exclude(voteno=0).aggregate(Avg('avgscore')).values())[
+			0]
 
 	# number of comments written
 	numcomments = Comment.objects.select_related().filter(user__id=owner.id).count()
 
 	viewer = request.user.id
 	return render(request, "user.html", \
-								{'owner': owner, 'viewer': viewer, 'numcomments': numcomments, 'uploadavg': uploadavg,
-								 'recentadds': recentadds,
-								 'recentuploads': recentuploads, 'otheradds': otheradds, 'useradds': useradds,
-								 'token_button': request.user.has_perm("playlist.give_token")})
+	              {'owner': owner, 'viewer': viewer, 'numcomments': numcomments, 'uploadavg': uploadavg,
+	               'recentadds': recentadds,
+	               'recentuploads': recentuploads, 'otheradds': otheradds, 'useradds': useradds,
+	               'token_button': request.user.has_perm("playlist.give_token")})
 
 
 @permission_required("playlist.give_token")
@@ -1222,11 +1222,11 @@ def globalstats(request):
 		pass
 
 	return render(request, 'stats.html', \
-								{'populardongs': populardongs, \
-								 'popularadders': popularadders, \
-								 'popularadders30': popularadders30, \
-								 'popularuploaders': popularuploaders, \
-								 'popularuploaders30': popularuploaders30})
+	              {'populardongs': populardongs, \
+	               'popularadders': popularadders, \
+	               'popularadders30': popularadders30, \
+	               'popularuploaders': popularuploaders, \
+	               'popularuploaders30': popularuploaders30})
 
 
 # SITE STATS
@@ -1382,18 +1382,18 @@ def newregister(request):
 					profile = SAProfile(username)
 				except URLError as e:
 					error = "Couldn't find your profile. Check you haven't made a typo and that SA isn't down."
-					# error = None
+				# error = None
 
 				try:
 					if error is None and len(UserProfile.objects.filter(sa_id=profile.get_id())) > 0:
 						error = "You appear to have already registered with this SA account"
 				except IDNotFoundError:
 					error = "Your SA ID could not be found. Please contact Jonnty"
-					# error = None
+				# error = None
 
 				if error is None and not profile.has_authcode(authcode):
 					error = "Verification code not found on your profile."
-					# error = None
+			# error = None
 
 			if len(User.objects.filter(username__iexact=username)):
 				error = "This username has already been taken. Please contact Jonnty to get a different one."
@@ -1406,7 +1406,7 @@ def newregister(request):
 					g = Group(name="Listener")
 					g.save()
 					permissions = ["upload_song", "view_artist", "view_playlist", "view_song", "view_user",
-												 "queue_song"]
+					               "queue_song"]
 					[g.permissions.add(Permission.objects.get(codename=s)) for s in permissions]
 					g.save()
 				user.groups.add(g)
@@ -1448,8 +1448,8 @@ def search(request):
 				songs = paginator.page(paginator.num_pages)
 
 			return render(request, 'search.html',
-										{'form': form, 'artists': list(artists), 'albums': list(albums), 'songs': songs,
-										 'query': query})
+			              {'form': form, 'artists': list(artists), 'albums': list(albums), 'songs': songs,
+			               'query': query})
 
 	else:
 		form = SearchForm()
