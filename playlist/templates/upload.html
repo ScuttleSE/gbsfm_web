@@ -9,6 +9,7 @@
     {% endif %}
     <p>Upload mp3 files here. Make sure the tags make sense!</p>
     <p><strong>Now supports multiple files at once!</strong></p>
+    <p>Maximum filesize is 512MB (536,870,912 Bytes) per file.</p>
     <p>&lt;DaWolfey&gt; upload away, but for the love of god, search first</p>
     <form enctype="multipart/form-data" action="/upload" method="POST">
     {% csrf_token %}
