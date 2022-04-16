@@ -93,6 +93,7 @@ re_path(r'^start_ftp$', playlist.views.start_ftp, {}, name="start_ftp"),
 re_path(r'^stop_ftp$', playlist.views.stop_ftp, {}, name="stop_ftp"),
 re_path(r'^start_listeners$', playlist.views.start_listeners, {}, name="start_listeners"),
 re_path(r'^start_remaining$', playlist.views.start_remaining, {}, name="start_remaining"),
+re_path(r'^start_jingleplayer$', playlist.views.start_jingleplayer, {}, name="start_jingleplayer"),
 re_path(r'^carplay$', playlist.views.carplay, {}, name="carplay"),
 #javascript stuff
 re_path(r'^artist/$', playlist.views.artist, {}, name="artist_js"),
