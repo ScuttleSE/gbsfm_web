@@ -99,10 +99,6 @@ def start_remaining(request):
   utils.start_remaining()
   return HttpResponseRedirect(reverse('g2admin'))
 
-@permission_required('playlist.start_stream')
-def start_jingleplayer(request):
-  utils.start_jingleplayer()
-  return HttpResponseRedirect(reverse('g2admin'))
 
 @permission_required('playlist.stop_stream')
 def stop_stream(request):

@@ -8,6 +8,7 @@
     <p><a href="{% url 'stop_metadataupdater' %}" class="button">Stop metadata updater</a></p> If someone is livestreaming, use this.
     <p><a href="{% url 'start_listeners' %}" class="button">Start listener updater</a></p> This is the process that makes sure that the listener count on the website updates
     <p><a href="{% url 'start_remaining' %}" class="button">Start remaining time updater</a></p> This is the process that makes sure that the progress bar in the bottom right updates
+    <p><a href="{% url 'start_jingleplayer' %}" class="button">Start Jingleplayer</a></p> This is the process that plays a jingle at the top of the hour. It runs at :55, and the jingle is played between :00 and :10 whenever there is a gap between dongs.
     <hr>
     <p><a href="{% url 'restart_linkbot' %}" class="button">Restart Shoes_Linkbot (Discord/IRC)</a></p>
     <p><a href="{% url 'restart_socks' %}" class="button">Restart Socks (IRC)</a></p>

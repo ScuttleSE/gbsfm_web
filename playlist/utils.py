@@ -84,6 +84,12 @@ def start_metadataupdater():
   Popen(["nohup", GBSFM_DIR + "/metadataupdater.sh", ">/dev/null", "2>&1&"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
+def start_jingleplayer():
+  Popen(["killall", "-r", "playjingle.py"], \
+  stdin=None, stdout=None, stderr=None, close_fds=True)
+  Popen(["nohup", GBSFM_DIR + "/playjingle.py", ">/dev/null", "2>&1&"], \
+  stdin=None, stdout=None, stderr=None, close_fds=True)
+
 def stop_metadataupdater():
   Popen(["killall", "-r", "metadataupdater.sh"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
