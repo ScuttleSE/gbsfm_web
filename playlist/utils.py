@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
 from subprocess import Popen, PIPE
+import subprocess
 import os
 import re
 
@@ -85,10 +86,16 @@ def start_metadataupdater():
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_jingleplayer():
-  Popen(["killall", "-r", "playjingle.py"], \
-  stdin=None, stdout=None, stderr=None, close_fds=True)
-  Popen(["nohup", GBSFM_DIR + "/playjingle.py", ">/dev/null", "2>&1&"], \
-  stdin=None, stdout=None, stderr=None, close_fds=True)
+  commandresult = subprocess.run(["killall", "-r", "playjingle.py"], capture_output=True, text=True)
+  print("stdout:", commandresult.stdout)
+  print("stderr:", commandresult.stderr)
+  commandresult = subprocess.run(["nohup", GBSFM_DIR + "/playjingle.py", ">/dev/null", "2>&1&"], capture_output=True, text=True)
+  print("stdout:", commandresult.stdout)
+  print("stderr:", commandresult.stderr)
+  #Popen(["killall", "-r", "playjingle.py"], \
+  #stdin=None, stdout=None, stderr=None, close_fds=True)
+  #Popen(["nohup", GBSFM_DIR + "/playjingle.py", ">/dev/null", "2>&1&"], \
+  #stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def stop_metadataupdater():
   Popen(["killall", "-r", "metadataupdater.sh"], \
