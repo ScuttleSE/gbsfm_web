@@ -39,12 +39,12 @@ class Command(BaseCommand):
 BASE_DIR = settings.FTP_BASE_DIR
 
 class G2FTPHandler(FTPHandler):
-  
+
   def __init__(self, conn, server, ioloop):
     FTPHandler.__init__(self, conn, server, ioloop)
-    
+
   def on_file_received(self, file):
-  
+
     def handle():
       try:
         User.objects.get(username=self.username).userprofile.uploadSong(UploadedFile(file, username=User.username))
@@ -63,7 +63,7 @@ class G2FTPHandler(FTPHandler):
       finally:
         os.remove(file)
       self.sleeping = False
-      
+
     self.sleeping = True
     threading.Thread(target=handle).start()
 
@@ -81,37 +81,36 @@ class G2Authorizer(DummyAuthorizer):
     if not bool(authenticate(username=username, password=password)):
       return False
     homedir = os.path.join(BASE_DIR, username.lower())
-    self._create_dir_if_neccessary(homedir)      
+    self._create_dir_if_neccessary(homedir)
     try:
       self.add_user(username, 'password', homedir, perm='lweadf') #list, write, CWD
     except ValueError:
       pass #already logged in
-      
+
     return True
-  
+
 now = lambda: time.strftime("[%Y-%b-%d %H:%M:%S]")
-   
+
 def standard_logger(msg):
     f1.write("%s %s\n" %(now(), msg))
     f1.flush()
-   
+
 def line_logger(msg):
     f2.write("%s %s\n" %(now(), msg))
     f2.flush()
-    
+
 def error_logger(msg):
     f3.write("%s %s\n" %(now(), msg))
     f3.flush()
-  
+
 def main():
   logging.basicConfig(filename=settings.LOG_DIR + '/ftpd.log', level=logging.INFO)
   authorizer = G2Authorizer()
   ftp_handler = G2FTPHandler
   ftp_handler.authorizer = authorizer
-  ftp_handler.masquerade_address = '85.24.128.115'
+  ftp_handler.masquerade_address = '94.254.94.238'
   ftp_handler.passive_ports = range(2102,2150)
 
   address = ('', 2100)
   ftpd = FTPServer(address, ftp_handler)
   ftpd.serve_forever()
-
