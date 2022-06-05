@@ -157,7 +157,8 @@ SA_PASSWORD = other_settings.SA_PASSWORD
 PLAYLIST_MAX = 1
 
 # How long before a song can be played again, in hours
-REPLAY_INTERVAL = 24 * 8
+# REPLAY_INTERVAL = 24 * 8
+REPLAY_INTERVAL = 24 * 90
 
 #STREAMINFO_URL = "http://gbsfm:8000/statistics"
 STREAMINFO_URL = "http://admin:adminpassword@192.168.0.154:8888/admin/stats"
