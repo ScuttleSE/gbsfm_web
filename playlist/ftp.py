@@ -108,7 +108,7 @@ def main():
   authorizer = G2Authorizer()
   ftp_handler = G2FTPHandler
   ftp_handler.authorizer = authorizer
-  ftp_handler.masquerade_address = '94.254.94.23'
+  ftp_handler.masquerade_address = '88.99.161.58'
   ftp_handler.passive_ports = range(2102,2150)
 
   address = ('', 2100)
