@@ -58,9 +58,7 @@ def start_ftp():
   os.chdir(olddir)
 
 def restart_ftp():
-  authstring = "Authorization: Bearer " + settings.DRONE_CI
-  print(authstring)
-  Popen(["curl", "-ik", "-X", "POST", "https://drone.hemma.lokal/api/repos/scuttle/gbsfm_ftprestart/builds", "-H", authstring], \
+  Popen(["curl", "-s", "http://controller/restart-ftp.sh"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_stream2():
