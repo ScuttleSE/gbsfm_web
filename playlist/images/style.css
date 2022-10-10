@@ -713,3 +713,7 @@ td.emoted { }
 }
 
 tr:hover td { background:#0002; }
+
+#livedj {position: absolute;display: block;font-size: 32px;padding: 10px;top:300px;left:150px;right:150px;background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);background-size: 400% 400%;animation: gradient 7s linear infinite;border-radius: 25px;border: 5px solid #000;box-shadow: 10px 10px 15px 0px #000;}
+
+@keyframes gradient {0% {background-position: 0% 50%;}50% {background-position: 100% 50%;}100% {background-position: 0% 50%;}}
