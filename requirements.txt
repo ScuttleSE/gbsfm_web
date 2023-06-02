@@ -1,4 +1,4 @@
-asgiref==3.4.1; python_version >= '3.6'
+asgiref==3.5.2; python_version >= '3.6'
 backports.zoneinfo==0.2.1; python_version < '3.9'
 django==4.1.9
 mutagen==1.45.1
