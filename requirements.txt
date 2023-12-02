@@ -5,4 +5,4 @@ mutagen==1.45.1
 mysqlclient==2.1.0
 pyftpdlib==1.5.6
 sqlparse==0.4.4; python_version >= '3.5'
-uwsgi==2.0.20
+uwsgi==2.0.23
