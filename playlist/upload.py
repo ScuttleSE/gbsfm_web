@@ -20,6 +20,9 @@ from django.contrib.auth.models import User
 class UnsupportedFormatError(Exception): pass
 class CorruptFileError(Exception): pass
 
+# Adding composer-support to EasyMP4
+EasyMP4.RegisterTextKey("composer", "©wrt")
+
 class UploadedFile:
   supported_types = ['mp3', 'flac', 'mp4', 'm4a', 'ogg', 'webm', 'opus', 'vqf', 'mp2', 'ra', 'ram', 'mpc', 'xm', 's3m', 'it', 'mod', 'wma'] #TODO: make this a config option for god's sake
   def __init__(self, file, realname=None, filetype=None, username=None):
