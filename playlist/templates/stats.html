@@ -32,6 +32,15 @@
   </ol>
   {% endif %}
 
+  {% if popularaddersyear %}
+  <p><span style="font-weight: bold">Top 10 adders last year:</span></p>
+  <ol>
+    {% for adder in popularaddersyear %}
+      <li><a href="/user/{{adder.adder_id}}">{{adder.username}}</a>: {{adder.count}} adds</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
   {% if popularuploaders %}
   <p><span style="font-weight: bold">Top 10 uploaders of all time:</span></p>
   <ol>
@@ -45,6 +54,15 @@
   <p><span style="font-weight: bold">Top 10 uploaders last 30 days:</span></p>
   <ol>
     {% for uploader in popularuploaders30 %}
+      <li><a href="/user/{{uploader.uploader_id}}">{{uploader.username}}</a>: {{uploader.count}} uploads</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+
+  {% if popularuploadersyear %}
+  <p><span style="font-weight: bold">Top 10 uploaders last year:</span></p>
+  <ol>
+    {% for uploader in popularuploadersyear %}
       <li><a href="/user/{{uploader.uploader_id}}">{{uploader.username}}</a>: {{uploader.count}} uploads</li>
     {% endfor %}
   </ol>
