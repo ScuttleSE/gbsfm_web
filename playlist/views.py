@@ -1192,8 +1192,10 @@ def globalstats(request):
   populardongs = {}
   popularadders = {}
   popularadders30 = {}
+  popularaddersyear = {}
   popularuploaders = {}
   popularuploaders30 = {}
+  popularuploadersyear = {}
 
   try:
     with open('/tmp/top10dongs_alltime.json') as f:
@@ -1212,6 +1214,12 @@ def globalstats(request):
       popularadders30 = ast.literal_eval(f.read())
   except:
     pass
+  
+  try:
+    with open('/tmp/top10adders_year.json') as f:
+      popularaddersyear = ast.literal_eval(f.read())
+  except:
+    pass
 
   try:
     with open('/tmp/top10uploaders_alltime.json') as f:
@@ -1225,12 +1233,20 @@ def globalstats(request):
   except:
     pass
 
+  try:
+    with open('/tmp/top10uploaders_year.json') as f:
+      popularuploadersyear = ast.literal_eval(f.read())
+  except:
+    pass
+
   return render(request, 'stats.html', \
                 {'populardongs': populardongs, \
                  'popularadders': popularadders, \
                  'popularadders30': popularadders30, \
+		 'popularaddersyear': popularaddersyear, \
                  'popularuploaders': popularuploaders, \
-                 'popularuploaders30': popularuploaders30})
+                 'popularuploaders30': popularuploaders30, \
+		 'popularuploadersyear': popularuploadersyear})
 
 
 # SITE STATS
