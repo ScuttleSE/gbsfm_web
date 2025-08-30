@@ -565,6 +565,8 @@ class Song(models.Model):
       entry.song = self
       entry.save()
 
+    self.play_count = self.play_count + song.play_count
+
     #steal old song's tags where this one lacks them
     #MUST BE UPDATED IF/WHEN NEW TAGS ADDED (sorry code nazis)
     for tag in ['title', 'artist', 'album', 'composer', 'lyricist', 'remixer', 'genre', 'track']:
