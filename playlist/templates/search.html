@@ -41,7 +41,7 @@
   {% endif %}
   {% if songs.object_list %}
   
-  {% if artists.has_previous %}
+  {% if songs.has_previous %}
       <a href="{% url 'search' %}?page={{ songs.previous_page_number }}&query={{query}}">&lt;&lt;</a>
     {% endif %}
     Results: page {{ songs.number }} of {{ songs.paginator.num_pages }}
@@ -68,7 +68,7 @@
     {% endfor %}
   </table>
 
-  {% if artists.has_previous %}
+  {% if songs.has_previous %}
       <a href="{% url 'search' %}?page={{ songs.previous_page_number }}&query={{query}}">&lt;&lt;</a>
     {% endif %}
     Results: page {{ songs.number }} of {{ songs.paginator.num_pages }}
