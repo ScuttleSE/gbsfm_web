@@ -80,36 +80,52 @@ def stop_stream2():
 def start_metadataupdater():
   Popen(["killall", "-r", "metadataupdater.sh"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
-  Popen(["nohup", GBSFM_DIR + "/metadataupdater.sh", ">/dev/null", "2>&1&"], \
-  stdin=None, stdout=None, stderr=None, close_fds=True)
+  # Popen(["nohup", GBSFM_DIR + "/metadataupdater.sh", ">/dev/null", "2>&1&"], \
+  # stdin=None, stdout=None, stderr=None, close_fds=True)
+  os.spawnlp(os.P_NOWAIT, f"{GBSFM_DIR}/metadataupdater.sh", f"{GBSFM_DIR}/metadataupdater.sh")
 
 def start_jingleplayer():
-  commandresult = subprocess.run(["killall", "-r", "playjingle.py"], capture_output=True, text=True)
-  print("stdout:", commandresult.stdout)
-  print("stderr:", commandresult.stderr)
-  commandresult = subprocess.run(["nohup", GBSFM_DIR + "/playjingle.py", ">/dev/null", "2>&1&"], capture_output=True, text=True)
-  print("stdout:", commandresult.stdout)
-  print("stderr:", commandresult.stderr)
+  # commandresult = subprocess.run(["killall", "-r", "playjingle.py"], capture_output=True, text=True)
+  # print("stdout:", commandresult.stdout)
+  # print("stderr:", commandresult.stderr)
+  # commandresult = subprocess.run(["nohup", GBSFM_DIR + "/playjingle.py", ">/dev/null", "2>&1&"], capture_output=True, text=True)
+  # print("stdout:", commandresult.stdout)
+  # print("stderr:", commandresult.stderr)
+  Popen(["killall", "-r", "playjingle.py"], \
+  stdin=None, stdout=None, stderr=None, close_fds=True)
+  # Popen(["nohup", GBSFM_DIR + "/playjingle.py", ">/dev/null", "2>&1&"], \
+  # stdin=None, stdout=None, stderr=None, close_fds=True)
+  os.spawnlp(os.P_NOWAIT, f"{GBSFM_DIR}/playjingle.py", f"{GBSFM_DIR}/playjingle.py")
 
 def stop_metadataupdater():
   Popen(["killall", "-r", "metadataupdater.sh"], \
   stdin=None, stdout=None, stderr=None, close_fds=True)
 
 def start_listeners():
-  commandresult = subprocess.run(["killall", "-r", "listeners.sh"], capture_output=True, text=True)
-  print("stdout:", commandresult.stdout)
-  print("stderr:", commandresult.stderr)
-  commandresult = subprocess.run(["nohup", GBSFM_DIR + "/listeners.sh", ">/dev/null", "2>&1&"], capture_output=True, text=True)
-  print("stdout:", commandresult.stdout)
-  print("stderr:", commandresult.stderr)
+  # commandresult = subprocess.run(["killall", "-r", "listeners.sh"], capture_output=True, text=True)
+  # print("stdout:", commandresult.stdout)
+  # print("stderr:", commandresult.stderr)
+  # commandresult = subprocess.run(["nohup", GBSFM_DIR + "/listeners.sh", ">/dev/null", "2>&1&"], capture_output=True, text=True)
+  # print("stdout:", commandresult.stdout)
+  # print("stderr:", commandresult.stderr)
+  Popen(["killall", "-r", "listeners.sh"], \
+  stdin=None, stdout=None, stderr=None, close_fds=True)
+  # Popen(["nohup", GBSFM_DIR + "/listeners.sh", ">/dev/null", "2>&1&"], \
+  # stdin=None, stdout=None, stderr=None, close_fds=True)
+  os.spawnlp(os.P_NOWAIT, f"{GBSFM_DIR}/listeners.sh", f"{GBSFM_DIR}/listeners.sh")
 
 def start_remaining():
-  commandresult = subprocess.run(["killall", "-r", "remaining.py"], capture_output=True, text=True)
-  print("stdout:", commandresult.stdout)
-  print("stderr:", commandresult.stderr)
-  commandresult = subprocess.run(["nohup", GBSFM_DIR + "/remaining.py", ">/dev/null", "2>&1&"], capture_output=True, text=True)
-  print("stdout:", commandresult.stdout)
-  print("stderr:", commandresult.stderr)
+  # commandresult = subprocess.run(["killall", "-r", "remaining.py"], capture_output=True, text=True)
+  # print("stdout:", commandresult.stdout)
+  # print("stderr:", commandresult.stderr)
+  # commandresult = subprocess.run(["nohup", GBSFM_DIR + "/remaining.py", ">/dev/null", "2>&1&"], capture_output=True, text=True)
+  # print("stdout:", commandresult.stdout)
+  # print("stderr:", commandresult.stderr)
+  Popen(["killall", "-r", "remaining.py"], \
+  stdin=None, stdout=None, stderr=None, close_fds=True)
+  # Popen(["nohup", GBSFM_DIR + "/remaining.py", ">/dev/null", "2>&1&"], \
+  # stdin=None, stdout=None, stderr=None, close_fds=True)
+  os.spawnlp(os.P_NOWAIT, f"{GBSFM_DIR}/remaining.py", f"{GBSFM_DIR}/remaining.py")
 
 def start_stream3():
   Popen(["killall", "-KILL", "ices"]).wait()
