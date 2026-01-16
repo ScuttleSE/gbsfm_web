@@ -135,8 +135,8 @@ class ReportForm(forms.ModelForm):
 
 class NewRegisterForm(forms.Form):
   saname = forms.CharField(max_length=30, label="Something Awful Username:")
-  password1 = forms.CharField(max_length=30, label="Desired Password:", widget=forms.PasswordInput)
-  password2 = forms.CharField(max_length=30, label="Confirm Password:", widget=forms.PasswordInput)
+  password1 = forms.CharField(label="Desired Password:", widget=forms.PasswordInput)
+  password2 = forms.CharField(label="Confirm Password:", widget=forms.PasswordInput)
   email = forms.EmailField(label="E-mail Address:")
   randcode = forms.CharField(max_length=32, widget=forms.HiddenInput)
 
