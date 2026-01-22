@@ -19,7 +19,7 @@
     </form>
   
   {% if artists or songs.object_list or albums%}
-  {% if artists %}
+  {% if artists and not songs.has_previous %}
   <p class="artists">Artist{{ artists|length|pluralize }}:<ul>
     {% for artist in artists|slice:":-1" %}
       <li><a href="{% url 'artist' artist.id %}">{{artist.name}}</a></li>
@@ -29,7 +29,7 @@
     {% endfor %}
   </p>
   {% endif %}
-  {% if albums %}
+  {% if albums and not songs.has_previous %}
   <p class="artists">Album{{ albums|length|pluralize }}:<ul>
     {% for album in albums|slice:":-1" %}
       <li><a href="{% url 'album' album.id %}">{{album.name}}</a></li>
