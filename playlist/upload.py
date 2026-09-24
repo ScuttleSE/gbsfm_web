@@ -163,11 +163,19 @@ class UploadedFile:
 
 
   def _fillOPUSTags(self):
-    # No proper mutagen support (lacks bitrate)
-    tags = utils.ffprobe_tags_from_file(self.file)
+    """Returns dict with tags and stuff"""
+    try:
+      song = OggOpus(self.file)
+    except HeaderNotFoundError:
+      raise CorruptFileError
+
+    tags = {}
+    tags['length'] = round(song.info.length)
+    tags['bitrate'] = song.info.bitrate/1000 #b/s -> kb/s
     tags['format'] = "opus"
     self.info.update(tags)
-    self._fillInfoTags(None)
+
+    self._fillInfoTags(song)
 
 
   def _fillMPCTags(self):
