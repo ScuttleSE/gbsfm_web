@@ -982,13 +982,13 @@ def album(request, albumid=None):
 
 @login_required()
 def listartists(request, letter='123', page='1'):
-  def the_filter(e):
-    if len(e.name) > 4:
-      return (not e.name[0].isalpha()) or (e.name[:4].lower() == "the" and (not e.name[4].isalpha()))
-    elif len(e.name) == 0:
-      return False
-    else:
-      return not e.name[0].isalpha()
+  #def the_filter(e):
+  #  if len(e.name) > 4:
+  #    return (not e.name[0].isalpha()) or (e.name[:4].lower() == "the" and (not e.name[4].isalpha()))
+  #  elif len(e.name) == 0:
+  #    return False
+  #  else:
+  #    return not e.name[0].isalpha()
 
   def sortkey(x):
     if len(x.name) > 4:
@@ -1004,8 +1004,8 @@ def listartists(request, letter='123', page='1'):
   # artist.delete() #prune empty artists
 
   if letter == '123':
-    artists = Artist.objects.all().order_by("sort_name").annotate(song_count=Count('songs'))
-    artists = filter(the_filter, artists)
+    artists = Artist.objects.all().filter(name__iregex=r"^[0-9]|^the [0-9]").order_by("sort_name").annotate(song_count=Count('songs'))
+    # artists = filter(the_filter, artists)
   elif letter == "all":
     artists = Artist.objects.all().order_by("sort_name").annotate(song_count=Count('songs'))
   elif letter.isalpha():
