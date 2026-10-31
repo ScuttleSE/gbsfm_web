@@ -11,27 +11,32 @@
 {% block main %}
 <div class="playlist">
 {% for report in reports %}
-  <div style="border-width: 1px; border-style: solid;">
-  <a href="{% url 'artist' report.song.artist.id %}">{{report.song.artist.name}}</a> - <a href="{% url 'song' report.song.id %}">{{report.song.title}}</a> by <a href="{% url 'user' report.reporter.id %}">{{report.reporter.username}}</a>
-  
-  <ul>
+  <div style="border-width: 1px; border-style: solid; margin: 4px;">
+  <a href="{% url 'user' report.reporter.id %}">{{report.reporter.username}}</a> reported:
+
+  <p>
   {% if report.duplicate %}
-    <li>Duplicate of <a href="{% url 'artist' report.duplicate.artist.id %}">{{report.duplicate.artist.name}}</a> - <a href="{% url 'song' report.duplicate.id %}">{{report.duplicate.title}}</a></li>
+    Dong: <a href="{% url 'artist' report.song.artist.id %}">{{report.song.artist.name}}</a> - <a href="{% url 'song' report.song.id %}">{{report.song.title}}</a><br />
+    Duplicate of <a href="{% url 'artist' report.duplicate.artist.id %}">{{report.duplicate.artist.name}}</a> - <a href="{% url 'song' report.duplicate.id %}">{{report.duplicate.title}}</a><br />
+    (It will merge into this &#94;)
   {% endif %}
   {% if report.corrupt %}
-    <li>Marked corrupt</li>
+    Dong: <a href="{% url 'artist' report.song.artist.id %}">{{report.song.artist.name}}</a> - <a href="{% url 'song' report.song.id %}">{{report.song.title}}</a><br />
+    Marked corrupt
   {% endif %}
   {% if report.not_music %}
-    <li>Marked "not music"</li>
+    Dong: <a href="{% url 'artist' report.song.artist.id %}">{{report.song.artist.name}}</a> - <a href="{% url 'song' report.song.id %}">{{report.song.title}}</a><br />
+    Marked "not music"
   {% endif %}
   {% if report.other %}
-    <li>Marked "other"</li>
+    Dong: <a href="{% url 'artist' report.song.artist.id %}">{{report.song.artist.name}}</a> - <a href="{% url 'song' report.song.id %}">{{report.song.title}}</a><br />
+    Marked "other"
   {% endif %}
   {% if report.user_note %}
-    <li>User note: {{report.user_note}}
+    User note: {{report.user_note}}
   {% endif %}
-  </ul>
-  
+  </p>
+
   <p> Approving this will <em>{% if report.duplicate %}merge{% else %}{% if report.corrupt %}delete{% else %}{% if report.not_music %}ban{% else %}do nothing to{% endif %}{% endif %}{% endif %}</em> this dong.</p>
   <p><a href="{% url 'reportsapprove' approve=report.id %}">(approve)</a> <a href="{% url 'reportsdeny' deny=report.id %}">(deny)</a></p>
   
@@ -42,4 +47,4 @@ No reports at the moment. Our dongs are being very obedient.
 {% endfor %}
 
 </div>
-{% endblock %} 
+{% endblock %}
